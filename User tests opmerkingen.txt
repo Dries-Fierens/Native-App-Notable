@@ -1,0 +1,3 @@
+Toevoegen button is opvallender dan het toevoeg vinkje
+Instellingen pagina uitbreiden (persoonlijke info pag, ....)
+Gewoon witte achtergrond ipv lichtblauwe achtergrond bij "No results"

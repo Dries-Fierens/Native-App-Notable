@@ -3,9 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Dries/Documents/Mobile_App_development/native-app-notable/Notable/app/src/main/res/layout-w1240dp/activity_login.xml" value="0.12951807228915663" />
-        <entry key="..\:/Users/Dries/Documents/Mobile_App_development/native-app-notable/Notable/app/src/main/res/layout-w936dp/activity_login.xml" value="0.151171875" />
-        <entry key="..\:/Users/Dries/Documents/Mobile_App_development/native-app-notable/Notable/app/src/main/res/layout/activity_login.xml" value="0.3087719298245614" />
+        <entry key="..\:/Users/Dries/Documents/Mobile_App_development/native-app-notable/Notable/app/src/main/res/layout/activity_main.xml" value="0.2536231884057971" />
       </map>
     </option>
   </component>

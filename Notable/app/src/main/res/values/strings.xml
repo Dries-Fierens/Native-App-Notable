@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Notable</string>
+    <string name="hint_username">Email</string>
+    <string name="hint_password">Wachtwoord</string>
+    <string name="button_login">Aanmelden</string>
+    <string name="error_password">Password must contain at least 8 characters.</string>
+    <string name="label" />
+    <string name="notable_logo" />
 </resources>

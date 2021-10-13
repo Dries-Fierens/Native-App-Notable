@@ -63,13 +63,12 @@
             android:text="@string/button_login" />
 
         <TextView
+            android:id="@+id/no_accountText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_gravity="center_horizontal"
-            android:text="@string/no_account"
-            android:autoLink="">
-        </TextView>
+            android:text="@string/no_account" />
 
     </LinearLayout>
 

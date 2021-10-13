@@ -11,14 +11,29 @@
         android:layout_height="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:orientation="vertical"
-        android:padding="24dp"
-        android:paddingTop="16dp">
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="@string/registration_title"
+                app:navigationIcon="@drawable/return_button"
+                style="@style/Widget.MaterialComponents.Toolbar.Primary"
+                />
+        </com.google.android.material.appbar.AppBarLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="32dp"
             android:hint="@string/hint_username"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -33,6 +48,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
             android:hint="@string/hint_phonenumber"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -48,6 +65,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
             android:hint="@string/hint_password"
             app:errorEnabled="true"
             app:passwordToggleEnabled="true"
@@ -62,7 +81,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/register_button"
-            android:layout_width="match_parent"
+            android:layout_width="332sp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/button_register" />

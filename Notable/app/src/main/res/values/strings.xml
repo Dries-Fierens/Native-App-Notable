@@ -9,4 +9,6 @@
     <string name="label" />
     <string name="notable_logo" />
     <string name="no_account"><u>No account? Create one</u></string>
+    <string name="page_title" />
+    <string name="registration_title">Registratie</string>
 </resources>

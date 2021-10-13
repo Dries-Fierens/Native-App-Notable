@@ -5,4 +5,5 @@
     <item name="password_text_input" type="id" />
     <item name="password_edit_text" type="id" />
     <item name="no_accountText" type="id" />
+    <item name="topAppBar" type="id" />
 </resources>

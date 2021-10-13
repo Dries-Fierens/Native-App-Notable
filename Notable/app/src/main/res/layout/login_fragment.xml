@@ -12,22 +12,22 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:padding="24dp"
-        android:paddingTop="16dp">
+        android:padding="24sp"
+        android:paddingTop="16sp">
 
         <ImageView
-            android:layout_width="132dp"
-            android:layout_height="132dp"
+            android:layout_width="132sp"
+            android:layout_height="132sp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="48dp"
-            android:layout_marginBottom="60dp"
+            android:layout_marginTop="48sp"
+            android:layout_marginBottom="60sp"
             android:contentDescription="@string/notable_logo"
             app:srcCompat="@drawable/logo" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
+            android:layout_margin="4sp"
             android:hint="@string/hint_username"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -42,7 +42,7 @@
             android:id="@+id/password_text_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
+            android:layout_margin="4sp"
             android:hint="@string/hint_password"
             app:errorEnabled="true"
             app:passwordToggleEnabled="true"
@@ -59,6 +59,7 @@
             android:id="@+id/login_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
             android:layout_gravity="center_horizontal"
             android:text="@string/button_login" />
 
@@ -66,8 +67,9 @@
             android:id="@+id/no_accountText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
+            android:layout_margin="4sp"
             android:layout_gravity="center_horizontal"
+            android:textSize="16sp"
             android:text="@string/no_account" />
 
     </LinearLayout>

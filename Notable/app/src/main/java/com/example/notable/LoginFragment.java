@@ -25,7 +25,6 @@ public class LoginFragment extends Fragment {
         MaterialButton nextButton = view.findViewById(R.id.login_button);
         TextView no_accountText = view.findViewById(R.id.no_accountText);
 
-        /* Events */
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,7 +50,7 @@ public class LoginFragment extends Fragment {
         no_accountText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationHost) getActivity()).navigateTo(new RegistrationFragment(), false);
+                ((NavigationHost) getActivity()).navigateTo(new RegistrationFragment(), true);
             }
         });
 

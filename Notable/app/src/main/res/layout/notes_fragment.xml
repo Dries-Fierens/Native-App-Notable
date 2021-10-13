@@ -38,4 +38,5 @@
         app:srcCompat="@drawable/add"
         app:layout_anchor="@id/bottomAppBar"
         />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

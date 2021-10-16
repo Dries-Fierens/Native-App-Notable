@@ -11,6 +11,7 @@
     <string name="no_account"><u>No account? Create one</u></string>
     <string name="registration_title">Registratie</string>
     <string name="myNotes_title">Mijn notities</string>
+    <string name="myGroups_title">Mijn groepen</string>
     <string name="settings" />
     <string name="content_description_settings">settings</string>
     <string name="groups">Mijn groepen</string>

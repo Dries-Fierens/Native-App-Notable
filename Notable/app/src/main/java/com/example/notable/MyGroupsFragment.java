@@ -5,17 +5,17 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class MyNotesFragment extends Fragment {
+public class MyGroupsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.notes_fragment, container, false);
+        View view = inflater.inflate(R.layout.groups_fragment, container, false);
         BottomNavigationView BottomNav = view.findViewById(R.id.bottomAppBar);
         BottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override

@@ -4,13 +4,11 @@
     <item
         android:id="@+id/notes"
         android:icon="@drawable/notes"
-        android:enabled="true"
         android:title="@string/notes"
         android:contentDescription="@string/content_description_notes" />
     <item
         android:id="@+id/groups"
         android:icon="@drawable/groups"
-        android:enabled="true"
         android:title="@string/groups"
         android:contentDescription="@string/content_description_groups" />
 

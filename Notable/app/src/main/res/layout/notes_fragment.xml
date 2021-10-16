@@ -16,27 +16,16 @@
             android:layout_height="?attr/actionBarSize"
             app:title="@string/myNotes_title"
             app:menu="@menu/notes_top_menu"
-            style="@style/Widget.MaterialComponents.Toolbar.Primary"
-            />
+            style="@style/Widget.MaterialComponents.Toolbar.Primary" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
-
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottomAppBar"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
-        android:backgroundTint="@color/white"
-        app:menu="@menu/notes_bottom_menu"
-        app:navigationIcon="@drawable/notes"
-        />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/add"
-        app:layout_anchor="@id/bottomAppBar"
-        />
+        app:menu="@menu/notes_bottom_menu" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

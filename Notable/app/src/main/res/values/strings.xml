@@ -13,6 +13,10 @@
     <string name="myNotes_title">Mijn notities</string>
     <string name="settings" />
     <string name="content_description_settings">settings</string>
-    <string name="groups" />
+    <string name="groups">Mijn groepen</string>
     <string name="content_description_groups">mijn groepen</string>
+    <string name="notes">Mijn notities</string>
+    <string name="content_description_notes">mijn notities</string>
+    <string name="add" />
+    <string name="content_description_add">add_image</string>
 </resources>

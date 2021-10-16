@@ -8,5 +8,7 @@
     <item name="topAppBar" type="id" />
     <item name="bottomAppBar" type="id" />
     <item name="groups" type="id" />
+    <item name="notes" type="id" />
     <item name="settings" type="id" />
+    <item name="add_image" type="id" />
 </resources>

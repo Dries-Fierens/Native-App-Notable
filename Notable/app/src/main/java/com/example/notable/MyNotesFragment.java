@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -17,6 +18,8 @@ public class MyNotesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.notes_fragment, container, false);
         BottomNavigationView BottomNav = view.findViewById(R.id.bottomAppBar);
+        MaterialToolbar topAppBar = view.findViewById(R.id.topAppBar);
+
         BottomNav.setSelectedItemId(R.id.notes);
         BottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -29,6 +32,19 @@ public class MyNotesFragment extends Fragment {
                 return true;
             }
         });
+
+        topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.settings){
+                    ((NavigationHost) getActivity()).navigateTo(new SettingsFragment(), true);
+                }else{
+                    /*Camera openen*/
+                }
+                return true;
+            }
+        });
+
         return view;
     }
 }

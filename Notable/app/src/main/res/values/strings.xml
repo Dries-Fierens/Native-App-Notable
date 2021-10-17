@@ -20,4 +20,11 @@
     <string name="content_description_notes">mijn notities</string>
     <string name="add" />
     <string name="content_description_add">add_image</string>
+    <string name="add_group" />
+    <string name="content_description_add_group">add groups</string>
+    <string name="settings_title">Instellingen</string>
+    <string name="button_logout">uitloggen</string>
+    <string name="button_personnelInfo">Persoonlijke informatie</string>
+    <string name="button_contactUs">Contact us</string>
+    <string name="button_PrivacyPolicy">Privacy policy</string>
 </resources>

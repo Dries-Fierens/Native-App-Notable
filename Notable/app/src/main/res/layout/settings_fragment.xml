@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="@string/settings_title"
+                app:navigationIcon="@drawable/return_button"
+                style="@style/Widget.MaterialComponents.Toolbar.Primary"
+                />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:id="@+id/personnelInfo_button"
+            android:text="@string/button_personnelInfo"
+            app:strokeColor="@color/black"
+            android:textColor="@color/black"
+            android:layout_width="332sp"
+            android:layout_height="55sp"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center_horizontal" />
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:id="@+id/contactUs_button"
+            android:text="@string/button_contactUs"
+            app:strokeColor="@color/black"
+            android:textColor="@color/black"
+            android:layout_width="332sp"
+            android:layout_height="55sp"
+            android:layout_gravity="center_horizontal" />
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:id="@+id/Privacy_button"
+            android:text="@string/button_PrivacyPolicy"
+            app:strokeColor="@color/black"
+            android:textColor="@color/black"
+            android:layout_width="332sp"
+            android:layout_height="55sp"
+            android:layout_gravity="center_horizontal" />
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:id="@+id/logout_button"
+            android:layout_width="231sp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/button_logout"
+            android:textColor="@color/purple_500"
+            android:layout_marginTop="30sp"
+            app:strokeColor="@color/black"
+            app:cornerRadius="20sp"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
+</ScrollView>

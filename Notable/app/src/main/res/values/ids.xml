@@ -11,4 +11,8 @@
     <item name="notes" type="id" />
     <item name="settings" type="id" />
     <item name="add_image" type="id" />
+    <item name="add_group" type="id" />
+    <item name="logout_button" type="id" />
+    <item name="personnelInfo_button" type="id" />
+    <item name="contactUs_button" type="id" />
 </resources>

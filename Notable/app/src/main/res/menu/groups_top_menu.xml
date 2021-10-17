@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/add_group"
+        android:icon="@drawable/add_group"
+        android:title="@string/add_group"
+        android:contentDescription="@string/content_description_add_group"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/settings"
+        android:title="@string/settings"
+        android:contentDescription="@string/content_description_settings"
+        app:showAsAction="ifRoom" />
+
+</menu>

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1078540010320",
+    "project_id": "odisee-notable",
+    "storage_bucket": "odisee-notable.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1078540010320:android:c71f13c76da562d3646255",
+        "android_client_info": {
+          "package_name": "com.example.notable"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1078540010320-3id52h074v0j5jsv3630s14l589vfmuk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCsG1uFRkTmi0dx4gz46t3A6C1OxY0qMw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1078540010320-3id52h074v0j5jsv3630s14l589vfmuk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -27,4 +27,5 @@
     <string name="button_personnelInfo">Persoonlijke informatie</string>
     <string name="button_contactUs">Contact us</string>
     <string name="button_PrivacyPolicy">Privacy policy</string>
+    <string name="default_web_client_id">242634928101-d9e7s53g7l9k33itart9jrrmcjh069ou.apps.googleusercontent.com</string>
 </resources>

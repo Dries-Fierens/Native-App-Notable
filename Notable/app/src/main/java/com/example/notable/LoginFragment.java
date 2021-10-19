@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.common.SignInButton;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -24,6 +26,10 @@ public class LoginFragment extends Fragment {
         final TextInputEditText passwordEditText = view.findViewById(R.id.password_edit_text);
         MaterialButton nextButton = view.findViewById(R.id.login_button);
         TextView no_accountText = view.findViewById(R.id.no_accountText);
+        SignInButton googleButton = view.findViewById(R.id.google_sign_in_button);
+
+        googleButton.setSize(SignInButton.SIZE_WIDE);
+        //googleButton.setColorScheme(SignInButton.COLOR_DARK) blauwe background, maar is niet mooi gecentreerd;
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override

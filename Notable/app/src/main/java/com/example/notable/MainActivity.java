@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity implements NavigationHost {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         // updateUI(currentUser);
-        // Check for existing Google Sign In account, if the user is already signed in
-        // the GoogleSignInAccount will be non-null.
+
+        // Misschien niet nodig!!!!!!!!!!!!!!!!! zie tutorial rechts
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         // updateUI(account);
     }

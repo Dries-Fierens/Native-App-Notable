@@ -16,4 +16,6 @@
     <item name="personnelInfo_button" type="id" />
     <item name="contactUs_button" type="id" />
     <item name="google_sign_in_button" type="id" />
+    <item name="email_text_field" type="id" />
+    <item name="password_text_field" type="id" />
 </resources>

@@ -67,7 +67,9 @@
             android:id="@+id/google_sign_in_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15sp" />
+            android:layout_marginTop="15sp"
+            app:buttonSize="wide"
+            app:colorScheme="auto"/>
 
         <TextView
             android:id="@+id/no_accountText"

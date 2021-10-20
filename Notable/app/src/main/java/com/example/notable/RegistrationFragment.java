@@ -1,5 +1,6 @@
 package com.example.notable;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -16,18 +17,21 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.concurrent.Executor;
-
 public class RegistrationFragment extends Fragment {
 
     private static final String TAG = "Notable";
     private FirebaseAuth mAuth;
+
+    public RegistrationFragment(){
+        // Required empty public constructor
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,8 +52,10 @@ public class RegistrationFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.registration_fragment, container, false);
 
-        final TextInputLayout passwordTextInput = view.findViewById(R.id.password_text_input);
-        final TextInputEditText passwordEditText = view.findViewById(R.id.password_edit_text);
+        TextInputLayout emailTextInput = view.findViewById(R.id.emailRegistration_text_input);
+        TextInputLayout passwordTextInput = view.findViewById(R.id.passwordRegistration_text_input);
+        TextInputEditText emailEditText = view.findViewById(R.id.emailRegistration_edit_text);
+        TextInputEditText passwordEditText = view.findViewById(R.id.passwordRegistration_edit_text);
         MaterialToolbar toolbar = view.findViewById(R.id.topAppBar);
         MaterialButton registerButton = view.findViewById(R.id.register_button);
 
@@ -67,7 +73,7 @@ public class RegistrationFragment extends Fragment {
                     passwordTextInput.setError(getString(R.string.error_password));
                 } else {
                     passwordTextInput.setError(null);
-                    ((NavigationHost) getActivity()).navigateTo(new LoginFragment(), false);
+                    createAccount(emailTextInput.getEditText().getText().toString(), passwordTextInput.getEditText().getText().toString());
                 }
             }
         });
@@ -75,20 +81,17 @@ public class RegistrationFragment extends Fragment {
         return view;
     }
 
+    // Campusroam wifi werkt niet voor de emulator dus verbindt via hotspot 4G
     private void createAccount(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener((Executor) this, new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener((Activity) getContext(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            ((NavigationHost) getActivity()).navigateTo(new LoginFragment(), false);
                         } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(getView().getContext(),"Authentication failed.",Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
                     }

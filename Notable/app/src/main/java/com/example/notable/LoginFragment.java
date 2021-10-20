@@ -1,5 +1,6 @@
 package com.example.notable;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -59,8 +61,9 @@ public class LoginFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_fragment, container, false);
 
-        final TextInputLayout passwordTextInput = view.findViewById(R.id.password_text_input);
-        final TextInputEditText passwordEditText = view.findViewById(R.id.password_edit_text);
+        TextInputLayout passwordTextInput = view.findViewById(R.id.passwordLogin_text_input);
+        TextInputEditText emailEditText = view.findViewById(R.id.emailLogin_edit_text);
+        TextInputEditText passwordEditText = view.findViewById(R.id.passwordLogin_edit_text);
         MaterialButton nextButton = view.findViewById(R.id.login_button);
         TextView no_accountText = view.findViewById(R.id.no_accountText);
         SignInButton googleButton = view.findViewById(R.id.google_sign_in_button);
@@ -75,8 +78,7 @@ public class LoginFragment extends Fragment {
                     passwordTextInput.setError(getString(R.string.error_password));
                 } else {
                     passwordTextInput.setError(null); // Clear the error
-                    //signIn();
-                    ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false); // Navigate to the next Fragment
+                    signIn(emailEditText.getText().toString(), passwordEditText.getText().toString());
                 }
             }
         });
@@ -108,9 +110,10 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
+    // werkt niet met de campusroam wifi, gebruik hotspot 4g van gsm!!!!!!!
     private void signIn(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener((Executor) this, new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener((Activity) getContext(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
@@ -118,10 +121,11 @@ public class LoginFragment extends Fragment {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false); // Navigate to the next Fragment
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(getView().getContext(), "Authentication failed.",
+                            Toast.makeText(getActivity(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }

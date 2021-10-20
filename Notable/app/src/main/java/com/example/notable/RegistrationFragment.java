@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -52,7 +53,6 @@ public class RegistrationFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.registration_fragment, container, false);
 
-        TextInputLayout emailTextInput = view.findViewById(R.id.emailRegistration_text_input);
         TextInputLayout passwordTextInput = view.findViewById(R.id.passwordRegistration_text_input);
         TextInputEditText emailEditText = view.findViewById(R.id.emailRegistration_edit_text);
         TextInputEditText passwordEditText = view.findViewById(R.id.passwordRegistration_edit_text);
@@ -73,7 +73,7 @@ public class RegistrationFragment extends Fragment {
                     passwordTextInput.setError(getString(R.string.error_password));
                 } else {
                     passwordTextInput.setError(null);
-                    createAccount(emailTextInput.getEditText().getText().toString(), passwordTextInput.getEditText().getText().toString());
+                    createAccount(emailEditText.getText().toString(), passwordEditText.getText().toString());
                 }
             }
         });
@@ -82,16 +82,22 @@ public class RegistrationFragment extends Fragment {
     }
 
     // Campusroam wifi werkt niet voor de emulator dus verbindt via hotspot 4G
+    //bekijk ook altijd de run error als je app crasht!!!!
     private void createAccount(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener((Activity) getContext(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            Log.w(TAG, "signInWithEmail:success", task.getException());
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                             ((NavigationHost) getActivity()).navigateTo(new LoginFragment(), false);
                         } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(getActivity(), "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
                     }

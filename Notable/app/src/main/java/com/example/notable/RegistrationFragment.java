@@ -89,14 +89,14 @@ public class RegistrationFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Log.w(TAG, "signInWithEmail:success", task.getException());
+                            Log.w(TAG, "createAccount:success", task.getException());
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                             ((NavigationHost) getActivity()).navigateTo(new LoginFragment(), false);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(getActivity(), "Authentication failed.",
+                            Log.w(TAG, "createAccount:failure", task.getException());
+                            Toast.makeText(getActivity(), "Registration failed",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }

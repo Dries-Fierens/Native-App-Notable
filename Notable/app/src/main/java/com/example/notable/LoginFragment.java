@@ -117,13 +117,14 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            Log.w(TAG, "signInWithEmail:success", task.getException());
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                             ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false); // Navigate to the next Fragment
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(getActivity(), "Authentication failed.",
+                            Toast.makeText(getActivity(), "Login failed, try again later",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }

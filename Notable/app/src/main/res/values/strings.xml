@@ -5,7 +5,6 @@
     <string name="button_login">Aanmelden</string>
     <string name="button_register">Registreer</string>
     <string name="error_password">Password must contain at least 8 characters.</string>
-    <string name="label" />
     <string name="notable_logo" />
     <string name="no_account"><u>No account? Create one</u></string>
     <string name="registration_title">Registratie</string>

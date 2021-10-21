@@ -1,7 +1,6 @@
 package com.example.notable;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -29,8 +28,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.util.concurrent.Executor;
 
 public class LoginFragment extends Fragment {
 
@@ -67,6 +64,7 @@ public class LoginFragment extends Fragment {
         MaterialButton nextButton = view.findViewById(R.id.login_button);
         TextView no_accountText = view.findViewById(R.id.no_accountText);
         SignInButton googleButton = view.findViewById(R.id.google_sign_in_button);
+
         /*GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                .requestIdToken(getString(R.string.Oauth_client_id)).requestEmail().build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);*/
@@ -110,7 +108,7 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
-    // werkt niet met de campusroam wifi, gebruik hotspot 4g van gsm!!!!!!!
+    // werkt niet met de campusroam of extended wifi, gebruik hotspot 4g van gsm of originele wifi!!!!!!!
     private void signIn(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener((Activity) getContext(), new OnCompleteListener<AuthResult>() {

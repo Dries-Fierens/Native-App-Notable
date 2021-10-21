@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class SettingsFragment extends Fragment {
     @Override
@@ -28,6 +29,7 @@ public class SettingsFragment extends Fragment {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
                 ((NavigationHost) getActivity()).navigateTo(new LoginFragment(), false);
             }
         });

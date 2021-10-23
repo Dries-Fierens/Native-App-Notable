@@ -116,6 +116,13 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
+    /* Methods/functions */
+
+    private void googleSignIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        launchSomeActivity.launch(signInIntent);
+    }
+
     ActivityResultLauncher<Intent> launchSomeActivity = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -132,18 +139,13 @@ public class LoginFragment extends Fragment {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+            Log.w(TAG, "firebaseAuthWithGoogle:" + account.getId());
             firebaseAuthWithGoogle(account.getIdToken());
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
         }
-    }
-
-    private void googleSignIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        launchSomeActivity.launch(signInIntent);
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
@@ -154,13 +156,13 @@ public class LoginFragment extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
+                            Log.w(TAG, "signInWithGoogle:success", task.getException());
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                             ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Log.w(TAG, "signInWithGoogle:failure", task.getException());
                             Toast.makeText(getActivity(), "Login failed, try again later",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);

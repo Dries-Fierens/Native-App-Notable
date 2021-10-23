@@ -1,6 +1,7 @@
 package com.example.notable;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SettingsFragment extends Fragment {
+
+    private static final String TAG = "Notable";
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings_fragment, container, false);
@@ -29,6 +33,7 @@ public class SettingsFragment extends Fragment {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.w(TAG, "signOut:success");
                 FirebaseAuth.getInstance().signOut();
                 ((NavigationHost) getActivity()).navigateTo(new LoginFragment(), false);
             }

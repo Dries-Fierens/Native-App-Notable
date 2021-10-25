@@ -3,12 +3,17 @@ package com.example.notable;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -24,6 +29,7 @@ import com.google.firebase.storage.StorageReference;
 
 public class MyNotesFragment extends Fragment {
 
+    private static final String TAG = "Notable:MyNotesFragment";
     private FirebaseStorage storage;
     private StorageReference mStorageRef;
 
@@ -77,8 +83,28 @@ public class MyNotesFragment extends Fragment {
         if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA}, 101);
         }else{
-            //openCamera();
+            mPermissionResult.launch(Manifest.permission.CAMERA);
+            //morgen
+            //https://www.youtube.com/watch?v=s1aOlr3vbbk
             //https://stackoverflow.com/questions/66551781/android-onrequestpermissionsresult-is-deprecated-are-there-any-alternatives
         }
     }
+
+    private void openCamera() {
+        Toast.makeText(getActivity(), "Camera Open Request", Toast.LENGTH_SHORT).show();
+    }
+
+    private ActivityResultLauncher<String> mPermissionResult = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            new ActivityResultCallback<Boolean>() {
+                @Override
+                public void onActivityResult(Boolean result) {
+                    if(result) {
+                        Log.w(TAG, "onActivityResult: PERMISSION GRANTED");
+                        openCamera();
+                    } else {
+                        Log.w(TAG, "onActivityResult: PERMISSION DENIED");
+                    }
+                }
+            });
 }

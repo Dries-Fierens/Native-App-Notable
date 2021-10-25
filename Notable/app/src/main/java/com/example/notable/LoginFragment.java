@@ -39,7 +39,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginFragment extends Fragment {
 
-    private static final String TAG = "Notable";
+    private static final String TAG = "Notable:LoginFragment";
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
 

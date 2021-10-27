@@ -58,15 +58,6 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getActivity());
-        updateUI(currentUser);
-    }
-
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_fragment, container, false);
 
@@ -142,8 +133,6 @@ public class LoginFragment extends Fragment {
             Log.w(TAG, "firebaseAuthWithGoogle:" + account.getId());
             firebaseAuthWithGoogle(account.getIdToken());
         } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
         }
     }
@@ -155,17 +144,11 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             Log.w(TAG, "signInWithGoogle:success", task.getException());
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
                             ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false);
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithGoogle:failure", task.getException());
-                            Toast.makeText(getActivity(), "Login failed, try again later",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+                            Toast.makeText(getActivity(), "Login failed, try again later", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -179,22 +162,13 @@ public class LoginFragment extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.w(TAG, "signInWithEmail:success", task.getException());
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
                             ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false); // Navigate to the next Fragment
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(getActivity(), "Login failed, try again later",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+                            Toast.makeText(getActivity(), "Login failed, try again later", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
-    }
-
-    private void updateUI(FirebaseUser user) {
-
     }
 
     private boolean isPasswordValid(@Nullable Editable text) {

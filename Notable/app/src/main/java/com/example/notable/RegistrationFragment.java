@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,7 +17,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
@@ -39,14 +37,6 @@ public class RegistrationFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mAuth = FirebaseAuth.getInstance();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
     }
 
     @Override
@@ -90,21 +80,13 @@ public class RegistrationFragment extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.w(TAG, "createAccount:success", task.getException());
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
                             ((NavigationHost) getActivity()).navigateTo(new LoginFragment(), false);
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "createAccount:failure", task.getException());
-                            Toast.makeText(getActivity(), "Registration failed",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+                            Toast.makeText(getActivity(), "Registration failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
-    }
-
-    private void updateUI(FirebaseUser currentUser) {
     }
 
     private boolean isPasswordValid(@Nullable Editable text) {

@@ -20,6 +20,16 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <GridView
+        android:id="@+id/gridview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:columnWidth="100dp"
+        android:horizontalSpacing="10dp"
+        android:verticalSpacing="10dp"
+        android:numColumns="auto_fit"/>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomAppBar"
         style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"

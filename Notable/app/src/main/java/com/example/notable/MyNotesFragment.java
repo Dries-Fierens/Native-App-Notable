@@ -6,7 +6,6 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.icu.util.ULocale;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -16,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -43,6 +44,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -53,7 +55,18 @@ public class MyNotesFragment extends Fragment {
     private FirebaseUser currentUser;
     private FirebaseStorage storage;
     private StorageReference mStorageRef;
+    private StorageReference mUserRef;
     private Uri mImageUri;
+    private GridView gridView;
+    ArrayList<ImageModel> arrayList = new ArrayList<>();
+    int images[] = {R.drawable.add,
+            R.drawable.add_group,
+            R.drawable.groups,
+            R.drawable.logo,
+            R.drawable.logo_square,
+            R.drawable.notes,
+            R.drawable.return_button,
+            R.drawable.settings};
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,8 +89,26 @@ public class MyNotesFragment extends Fragment {
         View view = inflater.inflate(R.layout.notes_fragment, container, false);
         BottomNavigationView BottomNav = view.findViewById(R.id.bottomAppBar);
         MaterialToolbar topAppBar = view.findViewById(R.id.topAppBar);
-
         BottomNav.setSelectedItemId(R.id.notes);
+
+        //mUserRef = storage.getReference(currentUser.getEmail()).child(currentUser.getUid());
+        gridView = view.findViewById(R.id.gridview);
+
+        for (int image : images) {
+            ImageModel imagemodel = new ImageModel();
+            imagemodel.setmThumbIds(image);
+            arrayList.add(imagemodel);
+        }
+
+        GridAdapter adpter= new GridAdapter(getActivity(), arrayList);
+        gridView.setAdapter(adpter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView parent, View view, int position, long id) {
+            }
+        });
+
         BottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

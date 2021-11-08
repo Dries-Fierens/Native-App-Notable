@@ -21,4 +21,6 @@
     <item name="contactUs_button" type="id" />
     <item name="google_sign_in_button" type="id" />
     <item name="emailRegistration_text_input" type="id" />
+    <item name="gridview" type="id" />
+    <item name="imageNotes" type="id" />
 </resources>

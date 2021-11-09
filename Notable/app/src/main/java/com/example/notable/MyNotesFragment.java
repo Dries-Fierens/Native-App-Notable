@@ -1,6 +1,7 @@
 package com.example.notable;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -87,9 +89,9 @@ public class MyNotesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.notes_fragment, container, false);
-        BottomNavigationView BottomNav = view.findViewById(R.id.bottomAppBar);
+        BottomNavigationView bottomNav = view.findViewById(R.id.bottomAppBar);
         MaterialToolbar topAppBar = view.findViewById(R.id.topAppBar);
-        BottomNav.setSelectedItemId(R.id.notes);
+        bottomNav.setSelectedItemId(R.id.notes);
 
         //mUserRef = storage.getReference(currentUser.getEmail()).child(currentUser.getUid());
         gridView = view.findViewById(R.id.gridview);
@@ -109,7 +111,7 @@ public class MyNotesFragment extends Fragment {
             }
         });
 
-        BottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+        bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.notes) {
@@ -134,6 +136,25 @@ public class MyNotesFragment extends Fragment {
                     //Gebruik zeker deze video voor ingelogd te blijven!!!
                     //https://www.youtube.com/watch?v=gD9uQf5UU-g
                 }
+                return true;
+            }
+        });
+
+        // getHeight wordt 0 omdat de view nog niet gesized en op het scherm wordt getoond, dus deze methode verhelpt dit.
+        view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener()
+        {
+            @Override
+            public boolean onPreDraw()
+            {
+                // zorgt ervoor dat het maar 1 keer wordt uitgevoerd
+                if (view.getViewTreeObserver().isAlive())
+                    view.getViewTreeObserver().removeOnPreDrawListener(this);
+
+                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) gridView.getLayoutParams();
+                params.setMargins(0, topAppBar.getHeight(), 0, bottomNav.getHeight());
+                Log.w(TAG, "height: " + topAppBar.getMeasuredHeight());
+                gridView.setLayoutParams(params);
+
                 return true;
             }
         });

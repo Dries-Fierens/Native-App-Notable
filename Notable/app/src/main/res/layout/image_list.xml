@@ -7,8 +7,10 @@
 
     <ImageView
         android:id="@+id/imageNotes"
-        android:layout_height="match_parent"
+        android:contentDescription="@string/GridImage"
         android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_gravity="center_horizontal"
         android:scaleType="fitXY"/>
 
 </RelativeLayout>

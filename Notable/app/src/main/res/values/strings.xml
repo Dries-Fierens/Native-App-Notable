@@ -26,4 +26,5 @@
     <string name="button_contactUs">Contact us</string>
     <string name="button_PrivacyPolicy">Privacy policy</string>
     <string name="Oauth_client_id">1078540010320-3id52h074v0j5jsv3630s14l589vfmuk.apps.googleusercontent.com</string>
+    <string name="GridImage" />
 </resources>

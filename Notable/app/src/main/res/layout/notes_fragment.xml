@@ -24,11 +24,12 @@
         android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:columnWidth="100dp"
+        android:footerDividersEnabled="false"
         android:horizontalSpacing="10dp"
         android:verticalSpacing="10dp"
-        android:numColumns="auto_fit"/>
+        android:padding="10dp"
+        android:scrollbars="vertical"
+        android:numColumns="3"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomAppBar"

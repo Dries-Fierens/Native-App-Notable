@@ -140,7 +140,7 @@ public class MyNotesFragment extends Fragment {
             }
         });
 
-        // getHeight wordt 0 omdat de view nog niet gesized en op het scherm wordt getoond, dus deze methode verhelpt dit.
+        // getHeight wordt 0 omdat de view nog niet gesized is en op het scherm wordt getoond, dus deze methode verhelpt dit.
         view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener()
         {
             @Override

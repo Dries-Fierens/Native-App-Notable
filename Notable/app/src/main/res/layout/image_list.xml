@@ -2,8 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#21bfaf">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/imageNotes"
@@ -11,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_gravity="center_horizontal"
-        android:scaleType="fitXY"/>
+        android:scaleType="fitXY"
+        android:background="@drawable/border_layout"/>
 
 </RelativeLayout>

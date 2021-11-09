@@ -7,13 +7,15 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 public class GridAdapter extends BaseAdapter {
     Context context;
-    ArrayList<ImageModel> arrayList;
+    ArrayList<String> arrayList;
 
-    public GridAdapter(Context context, ArrayList<ImageModel> arrayList) {
+    public GridAdapter(Context context, ArrayList<String> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
     }
@@ -40,7 +42,7 @@ public class GridAdapter extends BaseAdapter {
         }
         ImageView imageView;
         imageView = convertView.findViewById(R.id.imageNotes);
-        imageView.setImageResource(arrayList.get(position).getmThumbIds());
+        Glide.with(context).load(arrayList.get(position)).into(imageView);
         return convertView;
     }
 }

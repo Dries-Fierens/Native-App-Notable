@@ -31,6 +31,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,6 +42,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -60,15 +62,7 @@ public class MyNotesFragment extends Fragment {
     private StorageReference mUserRef;
     private Uri mImageUri;
     private GridView gridView;
-    ArrayList<ImageModel> arrayList = new ArrayList<>();
-    int images[] = {R.drawable.add,
-            R.drawable.add_group,
-            R.drawable.groups,
-            R.drawable.logo,
-            R.drawable.logo_square,
-            R.drawable.notes,
-            R.drawable.return_button,
-            R.drawable.settings};
+    ArrayList<String> imageList = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,21 +87,35 @@ public class MyNotesFragment extends Fragment {
         MaterialToolbar topAppBar = view.findViewById(R.id.topAppBar);
         bottomNav.setSelectedItemId(R.id.notes);
 
-        //mUserRef = storage.getReference(currentUser.getEmail()).child(currentUser.getUid());
+        currentUser = mAuth.getCurrentUser();
+        mUserRef = storage.getReference().child(currentUser.getEmail());
         gridView = view.findViewById(R.id.gridview);
-
-        for (int image : images) {
-            ImageModel imagemodel = new ImageModel();
-            imagemodel.setmThumbIds(image);
-            arrayList.add(imagemodel);
-        }
-
-        GridAdapter adpter= new GridAdapter(getActivity(), arrayList);
-        gridView.setAdapter(adpter);
+        mUserRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                for(StorageReference file:listResult.getItems()){
+                    Log.w(TAG, file.toString());
+                    file.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            imageList.add(uri.toString());
+                            Log.w(TAG,"URI: " + uri.toString());
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            GridAdapter adpter= new GridAdapter(getActivity(), imageList);
+                            gridView.setAdapter(adpter);
+                        }
+                    });
+                }
+            }
+        });
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
+
             }
         });
 
@@ -152,7 +160,6 @@ public class MyNotesFragment extends Fragment {
 
                 ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) gridView.getLayoutParams();
                 params.setMargins(0, topAppBar.getHeight(), 0, bottomNav.getHeight());
-                Log.w(TAG, "height: " + topAppBar.getMeasuredHeight());
                 gridView.setLayoutParams(params);
 
                 return true;
@@ -198,6 +205,7 @@ public class MyNotesFragment extends Fragment {
                                         Log.w(TAG, "onSuccess: Uploaded Image URL is " + uri.toString());
                                     }
                                 });
+                                ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false);
                                 Toast.makeText(getActivity(), "Image is uploaded", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(new OnFailureListener() {

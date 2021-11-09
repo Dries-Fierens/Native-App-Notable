@@ -39,7 +39,7 @@ public class GridAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.image_list, parent, false);
         }
         ImageView imageView;
-        imageView = convertView.findViewById(R.id.image);
+        imageView = convertView.findViewById(R.id.imageNotes);
         imageView.setImageResource(arrayList.get(position).getmThumbIds());
         return convertView;
     }

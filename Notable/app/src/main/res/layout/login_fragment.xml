@@ -16,11 +16,11 @@
         android:paddingTop="16sp">
 
         <ImageView
-            android:layout_width="132sp"
-            android:layout_height="132sp"
+            android:layout_width="186sp"
+            android:layout_height="186sp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="48sp"
-            android:layout_marginBottom="60sp"
+            android:layout_marginTop="38sp"
+            android:layout_marginBottom="55sp"
             android:contentDescription="@string/notable_logo"
             app:srcCompat="@drawable/logo" />
 

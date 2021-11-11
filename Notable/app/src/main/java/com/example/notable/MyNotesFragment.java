@@ -47,6 +47,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -227,6 +228,13 @@ public class MyNotesFragment extends Fragment {
                 Intent data = result.getData();
                 //de intent heeft dit keer een uri door EXTERNAL_CONTENT_URI dus dit kan opgeroepen worden door nog een keer getdata() te doen.
                 mImageUri = data.getData();
+                //compressen zodat het minder bytes inneemt op firebase en dan sneller inlaadt
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
+                    mImageUri = getImageUri(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 String timestamp = new SimpleDateFormat("dd_MM_yyyy_HHmmss", Locale.getDefault()).format(new Date());
                 Log.w(TAG, "Add image, uri: " + mImageUri);
                 String imageFileName = "JPEG" + timestamp + "." + getFileExt(mImageUri);
@@ -310,7 +318,7 @@ public class MyNotesFragment extends Fragment {
 
     public Uri getImageUri(Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        inImage.compress(Bitmap.CompressFormat.JPEG, 0, bytes);
         String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }

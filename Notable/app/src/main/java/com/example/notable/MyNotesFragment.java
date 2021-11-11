@@ -1,9 +1,10 @@
 package com.example.notable;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -31,7 +32,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -137,12 +137,7 @@ public class MyNotesFragment extends Fragment {
                 if (item.getItemId() == R.id.settings){
                     ((NavigationHost) getActivity()).navigateTo(new SettingsFragment(), true);
                 }else{
-                    /*Camera openen*/
-                    mPermissionResult.launch(Manifest.permission.CAMERA);
-                    askCameraPermissions();
-
-                    //Gebruik zeker deze video voor ingelogd te blijven!!!
-                    //https://www.youtube.com/watch?v=gD9uQf5UU-g
+                    selectImage();
                 }
                 return true;
             }
@@ -169,6 +164,34 @@ public class MyNotesFragment extends Fragment {
         return view;
     }
 
+    private void selectImage() {
+        final CharSequence[] options = { "Camera", "Gallery","Cancel" };
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Add image");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("Camera"))
+                {
+                    mPermissionResult.launch(Manifest.permission.CAMERA);
+                    askCameraPermissions();
+
+                    //Gebruik zeker deze video voor ingelogd te blijven!!!
+                    //https://www.youtube.com/watch?v=gD9uQf5UU-g
+                }
+                else if (options[item].equals("Gallery"))
+                {
+                    mPermissionResult.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+                    askGalleryPermissions();
+                }
+                else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
     private void askCameraPermissions() {
         if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA}, 101);
@@ -177,46 +200,94 @@ public class MyNotesFragment extends Fragment {
         }
     }
 
-    private void openCamera() {
-        Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        launchSomeActivity.launch(camera);
+    private void askGalleryPermissions() {
+        if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }else{
+            openGallery();
+        }
     }
 
-    ActivityResultLauncher<Intent> launchSomeActivity = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        Bitmap image = (Bitmap) data.getExtras().get("data");
-                        mImageUri = getImageUri(image);
-                        String timestamp = new SimpleDateFormat("dd_MM_yyyy_HHmmss", Locale.getDefault()).format(new Date());
-                        Log.w(TAG, "Add image, uri: " + mImageUri);
-                        String imageFileName = "JPEG" + timestamp + "." + getFileExt(mImageUri);
-                        StorageReference imageRef = mStorageRef.child(currentUser.getEmail()).child(imageFileName);
-                        Log.w(TAG, "Add image, uri: " + imageFileName);
-                        imageRef.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+    private void openCamera() {
+        Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        launchCameraActivity.launch(camera);
+    }
+
+    private void openGallery() {
+        Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        launchGalleryActivity.launch(gallery);
+    }
+
+    ActivityResultLauncher<Intent> launchGalleryActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK){
+                Toast.makeText(getActivity(), "Your image is being uploaded", Toast.LENGTH_SHORT).show();
+                Intent data = result.getData();
+                //de intent heeft dit keer een uri door EXTERNAL_CONTENT_URI dus dit kan opgeroepen worden door nog een keer getdata() te doen.
+                mImageUri = data.getData();
+                String timestamp = new SimpleDateFormat("dd_MM_yyyy_HHmmss", Locale.getDefault()).format(new Date());
+                Log.w(TAG, "Add image, uri: " + mImageUri);
+                String imageFileName = "JPEG" + timestamp + "." + getFileExt(mImageUri);
+                StorageReference imageRef = mStorageRef.child(currentUser.getEmail()).child(imageFileName);
+                Log.w(TAG, "Add image, uri: " + imageFileName);
+                imageRef.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        Log.w(TAG, "onSuccess: Uploaded Image URL is " + uri.toString());
-                                    }
-                                });
-                                ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false);
-                                Toast.makeText(getActivity(), "Image is uploaded", Toast.LENGTH_SHORT).show();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getActivity(), "Upload failed", Toast.LENGTH_SHORT).show();
+                            public void onSuccess(Uri uri) {
+                                Log.w(TAG, "onSuccess: Uploaded Image URL is " + uri.toString());
                             }
                         });
+                        ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false);
+                        Toast.makeText(getActivity(), "Image is uploaded", Toast.LENGTH_SHORT).show();
                     }
-                }
-            });
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getActivity(), "Upload failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+    });
+
+    ActivityResultLauncher<Intent> launchCameraActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                Bitmap image = (Bitmap) data.getExtras().get("data");
+                mImageUri = getImageUri(image);
+                String timestamp = new SimpleDateFormat("dd_MM_yyyy_HHmmss", Locale.getDefault()).format(new Date());
+                Log.w(TAG, "Add image, uri: " + mImageUri);
+                String imageFileName = "JPEG" + timestamp + "." + getFileExt(mImageUri);
+                StorageReference imageRef = mStorageRef.child(currentUser.getEmail()).child(imageFileName);
+                Log.w(TAG, "Add image, uri: " + imageFileName);
+                imageRef.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Log.w(TAG, "onSuccess: Uploaded Image URL is " + uri.toString());
+                            }
+                        });
+                        ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false);
+                        Toast.makeText(getActivity(), "Image successfully captured", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getActivity(), "Upload failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+    });
 
     private ActivityResultLauncher<String> mPermissionResult = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),

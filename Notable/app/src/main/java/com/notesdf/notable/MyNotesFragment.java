@@ -1,4 +1,4 @@
-package com.example.notable;
+package com.notesdf.notable;
 
 import android.Manifest;
 import android.app.Activity;
@@ -176,9 +176,6 @@ public class MyNotesFragment extends Fragment {
                 {
                     mPermissionResult.launch(Manifest.permission.CAMERA);
                     askCameraPermissions();
-
-                    //Gebruik zeker deze video voor ingelogd te blijven!!!
-                    //https://www.youtube.com/watch?v=gD9uQf5UU-g
                 }
                 else if (options[item].equals("Gallery"))
                 {
@@ -318,7 +315,8 @@ public class MyNotesFragment extends Fragment {
 
     public Uri getImageUri(Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 0, bytes);
+        // of 0
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }

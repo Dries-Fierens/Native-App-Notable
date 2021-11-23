@@ -1,4 +1,4 @@
-package com.example.notable;
+package com.notesdf.notable;
 
 import androidx.fragment.app.Fragment;
 

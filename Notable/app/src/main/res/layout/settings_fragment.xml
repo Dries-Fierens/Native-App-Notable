@@ -50,8 +50,18 @@
             android:layout_gravity="center_horizontal" />
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:id="@+id/Privacy_button"
+            android:id="@+id/privacy_button"
             android:text="@string/button_PrivacyPolicy"
+            app:backgroundTint="@color/white"
+            app:strokeColor="@color/black"
+            android:textColor="@color/black"
+            android:layout_width="332sp"
+            android:layout_height="55sp"
+            android:layout_gravity="center_horizontal" />
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:id="@+id/termsConditions_button"
+            android:text="@string/button_TermsConditions"
             app:backgroundTint="@color/white"
             app:strokeColor="@color/black"
             android:textColor="@color/black"

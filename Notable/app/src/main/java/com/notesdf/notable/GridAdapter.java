@@ -1,4 +1,4 @@
-package com.example.notable;
+package com.notesdf.notable;
 
 import android.content.Context;
 import android.view.LayoutInflater;

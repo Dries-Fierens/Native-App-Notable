@@ -1,4 +1,4 @@
-package com.example.notable;
+package com.notesdf.notable;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -55,6 +55,7 @@ public class LoginFragment extends Fragment {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.Oauth_client_id)).requestEmail().build();
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+        checkUser();
     }
 
     @Override
@@ -108,6 +109,14 @@ public class LoginFragment extends Fragment {
     }
 
     /* Methods/functions */
+
+    private void checkUser() {
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        if (firebaseUser != null){
+            Log.w(TAG, "checkUser: Already logged in");
+            ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false);
+        }
+    }
 
     private void googleSignIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();

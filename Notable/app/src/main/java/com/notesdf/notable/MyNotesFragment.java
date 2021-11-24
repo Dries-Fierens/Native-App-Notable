@@ -117,6 +117,7 @@ public class MyNotesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
 
+                ((NavigationHost) getActivity()).navigateTo(new ImageDetailsFragment(), false);
             }
         });
 
@@ -221,7 +222,7 @@ public class MyNotesFragment extends Fragment {
         @Override
         public void onActivityResult(ActivityResult result) {
             if (result.getResultCode() == Activity.RESULT_OK){
-                Toast.makeText(getActivity(), "Your image is being uploaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Your image is being uploaded", Toast.LENGTH_LONG).show();
                 Intent data = result.getData();
                 //de intent heeft dit keer een uri door EXTERNAL_CONTENT_URI dus dit kan opgeroepen worden door nog een keer getdata() te doen.
                 mImageUri = data.getData();
@@ -247,12 +248,12 @@ public class MyNotesFragment extends Fragment {
                             }
                         });
                         ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false);
-                        Toast.makeText(getActivity(), "Image is uploaded", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Image is uploaded", Toast.LENGTH_LONG).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getActivity(), "Upload failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Upload failed", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -282,12 +283,12 @@ public class MyNotesFragment extends Fragment {
                             }
                         });
                         ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false);
-                        Toast.makeText(getActivity(), "Image successfully captured", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Image successfully captured", Toast.LENGTH_LONG).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getActivity(), "Upload failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Upload failed", Toast.LENGTH_LONG).show();
                     }
                 });
             }

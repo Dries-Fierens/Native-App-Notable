@@ -4,7 +4,7 @@
     <string name="hint_password">Wachtwoord</string>
     <string name="button_login">Aanmelden</string>
     <string name="button_register">Registreer</string>
-    <string name="error_password">Password must contain at least 8 characters.</string>
+    <string name="error_password">Password must contain at least 8 characters, no whitespaces, 1 number, 1 lowercase and 1 uppercase.</string>
     <string name="notable_logo" />
     <string name="no_account"><u>No account? Create one</u></string>
     <string name="registration_title">Registratie</string>

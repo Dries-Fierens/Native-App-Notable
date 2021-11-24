@@ -37,6 +37,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class LoginFragment extends Fragment {
 
     private static final String TAG = "Notable:LoginFragment";
@@ -72,7 +75,7 @@ public class LoginFragment extends Fragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isPasswordValid(passwordEditText.getText())) {
+                if (!isPasswordValid(passwordEditText.getText().toString().trim())) {
                     passwordTextInput.setError(getString(R.string.error_password));
                 } else {
                     passwordTextInput.setError(null); // Clear the error
@@ -84,7 +87,7 @@ public class LoginFragment extends Fragment {
         passwordEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (isPasswordValid(passwordEditText.getText())) {
+                if (isPasswordValid(passwordEditText.getText().toString().trim())) {
                     passwordTextInput.setError(null); //Clear the error
                 }
                 return false;
@@ -157,7 +160,7 @@ public class LoginFragment extends Fragment {
                             ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false);
                         } else {
                             Log.w(TAG, "signInWithGoogle:failure", task.getException());
-                            Toast.makeText(getActivity(), "Login failed, try again later", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Login failed, try again later", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -174,13 +177,16 @@ public class LoginFragment extends Fragment {
                             ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false); // Navigate to the next Fragment
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(getActivity(), "Login failed, try again later", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Login failed, try again later", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
     }
 
-    private boolean isPasswordValid(@Nullable Editable text) {
-        return text != null && text.length() >= 8;
+    private boolean isPasswordValid(@Nullable String text) {
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{4,}$";
+        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Matcher matcher = pattern.matcher(text);
+        return text != null && text.length() >= 8 && matcher.matches();
     }
 }

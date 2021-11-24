@@ -22,6 +22,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class RegistrationFragment extends Fragment {
 
     private static final String TAG = "Notable";
@@ -58,7 +61,7 @@ public class RegistrationFragment extends Fragment {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isPasswordValid(passwordEditText.getText())) {
+                if (!isPasswordValid(passwordEditText.getText().toString().trim())) {
                     passwordTextInput.setError(getString(R.string.error_password));
                 } else {
                     passwordTextInput.setError(null);
@@ -82,13 +85,16 @@ public class RegistrationFragment extends Fragment {
                             ((NavigationHost) getActivity()).navigateTo(new LoginFragment(), false);
                         } else {
                             Log.w(TAG, "createAccount:failure", task.getException());
-                            Toast.makeText(getActivity(), "Registration failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Registration failed", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
     }
 
-    private boolean isPasswordValid(@Nullable Editable text) {
-        return text != null && text.length() >= 8;
+    private boolean isPasswordValid(@Nullable String text) {
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{4,}$";
+        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Matcher matcher = pattern.matcher(text);
+        return text != null && text.length() >= 8 && matcher.matches();
     }
 }

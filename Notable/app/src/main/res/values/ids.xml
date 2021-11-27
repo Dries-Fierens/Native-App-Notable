@@ -25,4 +25,5 @@
     <item name="gridview" type="id" />
     <item name="imageNotes" type="id" />
     <item name="termsConditions_button" type="id" />
+    <item name="fullscreen_image" type="id" />
 </resources>

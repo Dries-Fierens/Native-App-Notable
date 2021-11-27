@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -20,6 +22,7 @@ import android.view.ViewTreeObserver;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -63,6 +66,7 @@ public class MyNotesFragment extends Fragment {
     private StorageReference mUserRef;
     private Uri mImageUri;
     private GridView gridView;
+    private GridAdapter adpter;
     ArrayList<String> imageList = new ArrayList<>();
 
     @Override
@@ -88,6 +92,8 @@ public class MyNotesFragment extends Fragment {
         MaterialToolbar topAppBar = view.findViewById(R.id.topAppBar);
         bottomNav.setSelectedItemId(R.id.notes);
 
+        imageList = new ArrayList<>();
+
         currentUser = mAuth.getCurrentUser();
         mUserRef = storage.getReference().child(currentUser.getEmail());
         gridView = view.findViewById(R.id.gridview);
@@ -105,7 +111,7 @@ public class MyNotesFragment extends Fragment {
                     }).addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            GridAdapter adpter= new GridAdapter(getActivity(), imageList);
+                            adpter = new GridAdapter(getActivity(), imageList);
                             gridView.setAdapter(adpter);
                         }
                     });
@@ -116,8 +122,13 @@ public class MyNotesFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-
-                ((NavigationHost) getActivity()).navigateTo(new ImageDetailsFragment(), false);
+                Bundle bundle = new Bundle();
+                bundle.putString("image", adpter.getItem(position).toString());
+                ImageDetailsFragment imageDetailsFragment = new ImageDetailsFragment();
+                imageDetailsFragment.setArguments(bundle);
+                // Ik navigeerde eerst naar een new imagedetailsfragment en dus werden de arguments verwijdert!!!
+                // https://stackoverflow.com/questions/14970790/fragment-getarguments-returns-null
+                ((NavigationHost) getActivity()).navigateTo(imageDetailsFragment, true);
             }
         });
 

@@ -1,25 +1,49 @@
 package com.notesdf.notable;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MyGroupsFragment extends Fragment {
+
+    private DatabaseReference RootRef;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mAuth = FirebaseAuth.getInstance();
+        RootRef = FirebaseDatabase.getInstance().getReference();
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.groups_fragment, container, false);
         BottomNavigationView BottomNav = view.findViewById(R.id.bottomAppBar);
         MaterialToolbar topAppBar = view.findViewById(R.id.topAppBar);
+        currentUser = mAuth.getCurrentUser();
 
         BottomNav.setSelectedItemId(R.id.groups);
         BottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -40,12 +64,48 @@ public class MyGroupsFragment extends Fragment {
                 if (item.getItemId() == R.id.settings){
                     ((NavigationHost) getActivity()).navigateTo(new SettingsFragment(), true);
                 }else{
-                    /*Nieuw groep toevoegen*/
+                    RequestNewGroup();
                 }
                 return true;
             }
         });
 
         return view;
+    }
+
+    //https://www.youtube.com/watch?v=sgMO1AbUJmA
+
+    private void RequestNewGroup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Enter groep naam: ");
+        final EditText groupNameField = new EditText(getActivity());
+        groupNameField.setHint("bv. School groep");
+        builder.setView(groupNameField);
+
+        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String groupName = groupNameField.getText().toString();
+                if(TextUtils.isEmpty(groupName)){
+                    Toast.makeText(getActivity(), "Please write Group Name...", Toast.LENGTH_LONG);
+                }else{
+                    CreateNewGroup(groupName);
+                }
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void CreateNewGroup(String groupName) {
+        //https://www.youtube.com/watch?v=eizfx5lRE4M&list=PLxefhmF0pcPmtdoud8f64EpgapkclCllj&index=12
+        //https://youtu.be/sgMO1AbUJmA?t=624
     }
 }

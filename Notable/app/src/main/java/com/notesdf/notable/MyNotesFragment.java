@@ -79,13 +79,6 @@ public class MyNotesFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        currentUser = mAuth.getCurrentUser();
-    }
-
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.notes_fragment, container, false);
         BottomNavigationView bottomNav = view.findViewById(R.id.bottomAppBar);

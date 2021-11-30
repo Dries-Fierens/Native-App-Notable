@@ -87,7 +87,7 @@ public class RegistrationFragment extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             String userId = mAuth.getCurrentUser().getUid();
-                            RootRef.child("users").child(userId).setValue("");
+                            RootRef.child("Users").child(userId).setValue("");
                             Log.w(TAG, "createAccount:success", task.getException());
                             ((NavigationHost) getActivity()).navigateTo(new LoginFragment(), false);
                         } else {

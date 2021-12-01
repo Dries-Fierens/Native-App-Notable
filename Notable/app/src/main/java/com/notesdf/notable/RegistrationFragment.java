@@ -22,17 +22,14 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RegistrationFragment extends Fragment {
 
-    private static final String TAG = "Notable";
+    private static final String TAG = "Notable:Registration";
     private FirebaseAuth mAuth;
-    private DatabaseReference RootRef;
 
     public RegistrationFragment(){
         // Required empty public constructor
@@ -43,7 +40,6 @@ public class RegistrationFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mAuth = FirebaseAuth.getInstance();
-        RootRef = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
@@ -86,8 +82,6 @@ public class RegistrationFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            String userId = mAuth.getCurrentUser().getUid();
-                            RootRef.child("Users").child(userId).setValue("");
                             Log.w(TAG, "createAccount:success", task.getException());
                             ((NavigationHost) getActivity()).navigateTo(new LoginFragment(), false);
                         } else {

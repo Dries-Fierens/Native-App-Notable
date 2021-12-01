@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,12 +22,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class MyGroupsFragment extends Fragment {
 
-    private DatabaseReference RootRef;
+    private static final String TAG = "Notable:MyGroups";
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
 
@@ -35,7 +34,7 @@ public class MyGroupsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mAuth = FirebaseAuth.getInstance();
-        RootRef = FirebaseDatabase.getInstance().getReference();
+        currentUser = mAuth.getCurrentUser();
     }
 
     @Override
@@ -43,7 +42,6 @@ public class MyGroupsFragment extends Fragment {
         View view = inflater.inflate(R.layout.groups_fragment, container, false);
         BottomNavigationView BottomNav = view.findViewById(R.id.bottomAppBar);
         MaterialToolbar topAppBar = view.findViewById(R.id.topAppBar);
-        currentUser = mAuth.getCurrentUser();
 
         BottomNav.setSelectedItemId(R.id.groups);
         BottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {

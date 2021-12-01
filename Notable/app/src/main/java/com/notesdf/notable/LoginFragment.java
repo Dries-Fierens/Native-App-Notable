@@ -27,6 +27,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -36,9 +38,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,7 +49,7 @@ public class LoginFragment extends Fragment {
     private static final String TAG = "Notable:LoginFragment";
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
-    private DatabaseReference RootRef;
+    FirebaseFirestore db;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -61,7 +63,7 @@ public class LoginFragment extends Fragment {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.Oauth_client_id)).requestEmail().build();
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
-        RootRef = FirebaseDatabase.getInstance().getReference();
+        db = FirebaseFirestore.getInstance();
         checkUser();
     }
 
@@ -160,8 +162,7 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            String userId = mAuth.getCurrentUser().getUid();
-                            RootRef.child("Users").child(userId).setValue("");
+                            addFirestoreUser();
                             Log.w(TAG, "signInWithGoogle:success", task.getException());
                             ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false);
                         } else {
@@ -179,6 +180,7 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            addFirestoreUser();
                             Log.w(TAG, "signInWithEmail:success", task.getException());
                             ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false); // Navigate to the next Fragment
                         } else {
@@ -194,5 +196,46 @@ public class LoginFragment extends Fragment {
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
         Matcher matcher = pattern.matcher(text);
         return text != null && text.length() >= 8 && matcher.matches();
+    }
+
+    private void addFirestoreUser(){
+        String key = mAuth.getCurrentUser().getUid();
+        String email = mAuth.getCurrentUser().getEmail();
+        HashMap<String, String> userData = new HashMap<>();
+        String[] names = getName(email);
+        userData.put("firstname", names[0]);
+        userData.put("lastname", names[1]);
+        userData.put("email", email);
+        HashMap<String, Object> update = new HashMap<>();
+        update.put(key, userData);
+        db.collection("users").document(key).set(update).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.w(TAG, "User added successfully to Firestore");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "Failed adding user to firestore", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private String[] getName(String email){
+        String name = email.substring(0, email.indexOf("@"));
+        String[] names = new String[2];
+        if(!name.contains(".")){
+            name = name.substring(0, 1).toUpperCase() + name.substring(1);
+            names[0] = name;
+            names[1] = "";
+        }else{
+            String firstName = email.substring(0, email.indexOf("."));
+            firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1);
+            String lastName = email.substring(email.indexOf(".") + 1, email.indexOf("@"));
+            lastName = lastName.substring(0, 1).toUpperCase() + lastName.substring(1);
+            names[0] = firstName;
+            names[1] = lastName;
+        }
+        return names;
     }
 }

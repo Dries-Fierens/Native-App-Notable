@@ -23,6 +23,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -67,6 +68,7 @@ public class MyNotesFragment extends Fragment {
     private Uri mImageUri;
     private GridView gridView;
     private GridAdapter adpter;
+    private ProgressBar mProgressCircle;
     ArrayList<String> imageList = new ArrayList<>();
 
     @Override
@@ -84,6 +86,7 @@ public class MyNotesFragment extends Fragment {
         BottomNavigationView bottomNav = view.findViewById(R.id.bottomAppBar);
         MaterialToolbar topAppBar = view.findViewById(R.id.topAppBar);
         bottomNav.setSelectedItemId(R.id.notes);
+        mProgressCircle = (ProgressBar) view.findViewById(R.id.progress_circle);
 
         imageList = new ArrayList<>();
 
@@ -106,6 +109,7 @@ public class MyNotesFragment extends Fragment {
                         public void onSuccess(Uri uri) {
                             adpter = new GridAdapter(getActivity(), imageList);
                             gridView.setAdapter(adpter);
+                            mProgressCircle.setVisibility(View.INVISIBLE);
                         }
                     });
                 }

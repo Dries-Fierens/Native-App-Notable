@@ -29,4 +29,5 @@
     <string name="GridImage" />
     <string name="button_TermsConditions">Terms &amp; Conditions</string>
     <string name="fullscreenImage">fullscreenImage</string>
+    <string name="hint_message">Typ een chatbericht</string>
 </resources>

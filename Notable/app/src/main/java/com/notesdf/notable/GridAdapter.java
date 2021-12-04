@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 
@@ -42,7 +43,7 @@ public class GridAdapter extends BaseAdapter {
         }
         ImageView imageView;
         imageView = convertView.findViewById(R.id.imageNotes);
-        Glide.with(context).load(arrayList.get(position)).into(imageView);
+        Glide.with(context).load(arrayList.get(position)).placeholder(R.drawable.placeholder).diskCacheStrategy(DiskCacheStrategy.DATA).into(imageView);
         return convertView;
     }
 }

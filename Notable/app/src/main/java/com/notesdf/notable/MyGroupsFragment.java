@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,12 +23,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 public class MyGroupsFragment extends Fragment {
 
     private static final String TAG = "Notable:MyGroups";
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+    private ProgressBar mProgressCircle;
+    FirebaseFirestore db;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,6 +40,12 @@ public class MyGroupsFragment extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(true)
+                .setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED)
+                .build();
+        db.setFirestoreSettings(settings);
     }
 
     @Override
@@ -42,6 +53,7 @@ public class MyGroupsFragment extends Fragment {
         View view = inflater.inflate(R.layout.groups_fragment, container, false);
         BottomNavigationView BottomNav = view.findViewById(R.id.bottomAppBar);
         MaterialToolbar topAppBar = view.findViewById(R.id.topAppBar);
+        mProgressCircle = view.findViewById(R.id.progress_circle);
 
         BottomNav.setSelectedItemId(R.id.groups);
         BottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {

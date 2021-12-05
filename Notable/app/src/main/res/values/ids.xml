@@ -34,4 +34,18 @@
     <item name="message_edit_text" type="id" />
     <item name="chat_recyclerview" type="id" />
     <item name="progress_circle" type="id" />
+    <item name="text_indicator" type="id" />
+    <item name="layout_chatbox" type="id" />
+    <item name="text_chat_date_me" type="id" />
+    <item name="card_chat_message_me" type="id" />
+    <item name="text_chat_timestamp_me" type="id" />
+    <item name="text_chat_message_me" type="id" />
+    <item name="layout_chat_container_me" type="id" />
+    <item name="text_chat_date_other" type="id" />
+    <item name="image_chat_profile_other" type="id" />
+    <item name="text_chat_user_other" type="id" />
+    <item name="card_chat_message_other" type="id" />
+    <item name="layout_chat_container_other" type="id" />
+    <item name="text_chat_message_other" type="id" />
+    <item name="text_chat_timestamp_other" type="id" />
 </resources>

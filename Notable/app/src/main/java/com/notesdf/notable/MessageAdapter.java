@@ -44,11 +44,11 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message, MessageHol
         View view = null;
         if(viewType==MESSAGE_IN_VIEW_TYPE){
             view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.mssg, parent, false);
+                    .inflate(R.layout.chat_item, parent, false);
         }
         else{
             view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.mssg_out, parent, false);
+                    .inflate(R.layout.chat_item_other, parent, false);
         }
         return new MessageHolder(view);
     }

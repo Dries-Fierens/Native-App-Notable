@@ -12,11 +12,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 
-public class GridAdapter extends BaseAdapter {
+public class ImageAdapter extends BaseAdapter {
     Context context;
     ArrayList<String> arrayList;
 
-    public GridAdapter(Context context, ArrayList<String> arrayList) {
+    public ImageAdapter(Context context, ArrayList<String> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
     }
@@ -37,7 +37,7 @@ public class GridAdapter extends BaseAdapter {
     }
 
     @Override
-    public  View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView ==  null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.image_list, parent, false);
         }

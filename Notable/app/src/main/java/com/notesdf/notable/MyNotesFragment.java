@@ -8,8 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,7 +20,6 @@ import android.view.ViewTreeObserver;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -67,7 +64,7 @@ public class MyNotesFragment extends Fragment {
     private StorageReference mUserRef;
     private Uri mImageUri;
     private GridView gridView;
-    private GridAdapter adpter;
+    private ImageAdapter adpter;
     private ProgressBar mProgressCircle;
     ArrayList<String> imageList = new ArrayList<>();
 
@@ -92,7 +89,7 @@ public class MyNotesFragment extends Fragment {
 
         currentUser = mAuth.getCurrentUser();
         mUserRef = storage.getReference().child(currentUser.getEmail());
-        gridView = view.findViewById(R.id.gridview);
+        gridView = view.findViewById(R.id.notes_gridview);
         mUserRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
@@ -107,7 +104,7 @@ public class MyNotesFragment extends Fragment {
                     }).addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            adpter = new GridAdapter(getActivity(), imageList);
+                            adpter = new ImageAdapter(getActivity(), imageList);
                             gridView.setAdapter(adpter);
                             mProgressCircle.setVisibility(View.INVISIBLE);
                         }

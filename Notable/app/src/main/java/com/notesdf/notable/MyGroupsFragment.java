@@ -102,13 +102,6 @@ public class MyGroupsFragment extends Fragment {
             }
         });
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView parent, View view, int position, long id) {
-                onClick(view);
-            }
-        });
-
         // getHeight wordt 0 omdat de view nog niet gesized is en op het scherm wordt getoond, dus deze methode verhelpt dit.
         view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener()
         {
@@ -153,17 +146,6 @@ public class MyGroupsFragment extends Fragment {
         });
 
         return view;
-    }
-
-    public void onClick(View v) {
-        GroupAdapter.ViewHolder holder = (GroupAdapter.ViewHolder) ((View) v.getParent()).getTag();
-        Bundle bundle = new Bundle();
-        Button clickedButton = holder.button;
-        Log.w(TAG, clickedButton.getText().toString());
-        bundle.putString("buttonText", clickedButton.getText().toString());
-        ChatRoomFragment chatRoomFragment = new ChatRoomFragment();
-        chatRoomFragment.setArguments(bundle);
-        ((NavigationHost) getActivity()).navigateTo(chatRoomFragment, true);
     }
 
     private void RequestNewGroup() {

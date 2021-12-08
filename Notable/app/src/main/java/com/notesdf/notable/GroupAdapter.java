@@ -1,6 +1,7 @@
 package com.notesdf.notable;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +49,18 @@ public class GroupAdapter extends BaseAdapter {
         }else {
             holder = (ViewHolder) convertView.getTag();
         }
+        // http://www.migapro.com/click-events-listview-gridview/
         holder.button = convertView.findViewById(R.id.group_button);
+        holder.button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("buttonText", holder.button.getText().toString());
+                ChatRoomFragment chatRoomFragment = new ChatRoomFragment();
+                chatRoomFragment.setArguments(bundle);
+                ((NavigationHost) context).navigateTo(chatRoomFragment, true);
+            }
+        });
         holder.button.setText(arrayList.get(position));
         return convertView;
     }

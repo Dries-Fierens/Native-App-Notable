@@ -46,8 +46,6 @@ public class MyGroupsFragment extends Fragment {
     private GridView gridView;
     private String key;
     private GroupAdapter adapter;
-    //https://firebase.google.com/docs/firestore/query-data/get-data#source_options
-    private Source source = Source.CACHE;
     FirebaseFirestore db;
     ArrayList<String> groupList = new ArrayList<>();
 
@@ -71,19 +69,26 @@ public class MyGroupsFragment extends Fragment {
         key = mAuth.getCurrentUser().getUid();
 
         gridView = view.findViewById(R.id.groups_gridview);
-        getGroups();
-        db.collection("groups").document(key).get(source).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        // Offline
+        setOfflineGroups();
+        // Online
+        db.collection("groups").document(key).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     groupList = (ArrayList<String>) documentSnapshot.get("group_names");
                     Log.w(TAG, "DocumentSnapshot data: " + documentSnapshot.getData());
-                    adapter = new GroupAdapter(getActivity(), groupList);
-                    Log.w(TAG, adapter.toString());
-                    //https://stackoverflow.com/questions/218384/what-is-a-nullpointerexception-and-how-do-i-fix-it
-                    //nullpointException wordt gegeven omdat de gridview null was niet de adapter en er dus een methode werdt op opgeroepen.
-                    gridView.setAdapter(adapter);
-                    mProgressCircle.setVisibility(View.INVISIBLE);
+                    if(groupList != null){
+                        adapter = new GroupAdapter(getActivity(), groupList);
+                        Log.w(TAG, adapter.toString());
+                        //https://stackoverflow.com/questions/218384/what-is-a-nullpointerexception-and-how-do-i-fix-it
+                        //nullpointException wordt gegeven omdat de gridview null was niet de adapter en er dus een methode werdt op opgeroepen.
+                        gridView.setAdapter(adapter);
+                        mProgressCircle.setVisibility(View.INVISIBLE);
+                    }else{
+                        groupList = new ArrayList<>();
+                        Toast.makeText(getActivity(), "You have no chat groups, so make one", Toast.LENGTH_LONG);
+                    }
                 } else {
                     Log.w(TAG, "No such document");
                 }
@@ -146,6 +151,7 @@ public class MyGroupsFragment extends Fragment {
         builder.setTitle("Enter groep naam: ");
         final EditText groupNameField = new EditText(getActivity());
         groupNameField.setHint("bv. School groep");
+        groupNameField.setWidth(100);
         builder.setView(groupNameField);
 
         builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
@@ -154,6 +160,8 @@ public class MyGroupsFragment extends Fragment {
                 String groupName = groupNameField.getText().toString();
                 if(TextUtils.isEmpty(groupName)){
                     Toast.makeText(getActivity(), "Please write Group Name...", Toast.LENGTH_LONG);
+                }else if (groupName.length() > 16){
+                    Toast.makeText(getActivity(), "Group name is too long", Toast.LENGTH_LONG);
                 }else{
                     CreateNewGroup(groupName);
                 }
@@ -188,7 +196,9 @@ public class MyGroupsFragment extends Fragment {
         });
     }
 
-    private void getGroups(){
+    private void setOfflineGroups(){
+        //https://firebase.google.com/docs/firestore/query-data/get-data#source_options
+        Source source = Source.CACHE; // moet pas gebruikt worden als we offline zijn!!!
         db.collection("groups").document(key).get(source).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {

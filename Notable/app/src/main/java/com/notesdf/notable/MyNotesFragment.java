@@ -85,14 +85,13 @@ public class MyNotesFragment extends Fragment {
         bottomNav.setSelectedItemId(R.id.notes);
         mProgressCircle = (ProgressBar) view.findViewById(R.id.progress_circle);
 
-        imageList = new ArrayList<>();
-
         currentUser = mAuth.getCurrentUser();
         mUserRef = storage.getReference().child(currentUser.getEmail());
         gridView = view.findViewById(R.id.notes_gridview);
         mUserRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
+                imageList = new ArrayList<>();
                 for(StorageReference file:listResult.getItems()){
                     Log.w(TAG, file.toString());
                     file.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {

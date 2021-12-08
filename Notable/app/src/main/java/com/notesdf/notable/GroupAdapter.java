@@ -9,6 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 
 public class GroupAdapter extends BaseAdapter {
@@ -37,12 +39,17 @@ public class GroupAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
         if (convertView == null) {
+            holder = new ViewHolder();
             convertView = LayoutInflater.from(context).inflate(R.layout.group_list, parent, false);
+            holder.button = convertView.findViewById(R.id.group_button);
+            convertView.setTag(holder);
+        }else {
+            holder = (ViewHolder) convertView.getTag();
         }
-        Button button;
-        button = convertView.findViewById(R.id.group_button);
-        button.setText(arrayList.get(position));
+        holder.button = convertView.findViewById(R.id.group_button);
+        holder.button.setText(arrayList.get(position));
         return convertView;
     }
 
@@ -52,5 +59,12 @@ public class GroupAdapter extends BaseAdapter {
                 "context=" + context +
                 ", arrayList=" + arrayList +
                 '}';
+    }
+
+    // Om de buttons te kunnen aan clicken!!!!!
+    // https://stackoverflow.com/questions/34941919/what-is-best-way-to-implement-viewholder-design-pattern
+    // https://stackoverflow.com/questions/13220657/android-gridview-button-click-handler
+    static class ViewHolder{
+        public Button button;
     }
 }

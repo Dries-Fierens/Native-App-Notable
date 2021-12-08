@@ -53,6 +53,7 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message, MessageHol
         return new MessageHolder(view);
     }
 
+    //Voordeel van Recyclerview is dat het automatisch een Viewholder heeft, dit heeft gridview niet automatisch
     @Override
     protected void onBindViewHolder(@NonNull MessageHolder holder, int position, @NonNull Message model) {
         final TextView mText = holder.mText;

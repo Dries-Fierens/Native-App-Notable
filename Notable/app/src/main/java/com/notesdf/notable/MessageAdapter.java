@@ -66,8 +66,9 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message, MessageHol
         mTime.setText(DateFormat.format("dd MMM  (h:mm a)", model.getMessageTime()));
         Glide.with(context)
                 .setDefaultRequestOptions(requestOptions)
-                .load(storageReference.child(model.getMessageUserId()))
+                .load(R.drawable.placeholder)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(imgProfile);
+        //storageReference.child(model.getMessageUserId())
     }
 }

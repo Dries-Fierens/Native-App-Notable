@@ -48,8 +48,8 @@ public class MyGroupsFragment extends Fragment {
     private GridView gridView;
     private String key;
     private GroupAdapter adapter;
-    FirebaseFirestore db;
-    ArrayList<String> groupList = new ArrayList<>();
+    private FirebaseFirestore db;
+    private ArrayList<String> groupList = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,7 +89,7 @@ public class MyGroupsFragment extends Fragment {
                         mProgressCircle.setVisibility(View.INVISIBLE);
                     }else{
                         groupList = new ArrayList<>();
-                        Toast.makeText(getActivity(), "You have no chat groups, so make one", Toast.LENGTH_LONG);
+                        Toast.makeText(getActivity(), "Je hebt geen chatgroepen", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     Log.w(TAG, "No such document");
@@ -161,9 +161,9 @@ public class MyGroupsFragment extends Fragment {
             public void onClick(DialogInterface dialogInterface, int i) {
                 String groupName = groupNameField.getText().toString();
                 if(TextUtils.isEmpty(groupName)){
-                    Toast.makeText(getActivity(), "Please write Group Name...", Toast.LENGTH_LONG);
-                }else if (groupName.length() > 16){
-                    Toast.makeText(getActivity(), "Group name is too long", Toast.LENGTH_LONG);
+                    Toast.makeText(getActivity(), "Schrijf een groepnaam AUB...", Toast.LENGTH_LONG).show();
+                }else if (groupName.length() > 20){
+                    Toast.makeText(getActivity(), "Groepnaam is te lang", Toast.LENGTH_LONG).show();
                 }else{
                     CreateNewGroup(groupName);
                 }

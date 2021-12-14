@@ -1,5 +1,6 @@
 package com.notesdf.notable;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,10 +11,16 @@ public class Message {
     private String messageUserId;
     private long messageTime;
 
+    public Message(){}
+
     public Message(String messageUser, String messageText, String messageUserId) {
         this.messageUser = messageUser;
         this.messageText = messageText;
-        messageTime = new Date().getTime();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.HOUR, 1);
+        Date plus1 = cal.getTime();
+        this.messageTime = plus1.getTime();
         this.messageUserId = messageUserId;
     }
 

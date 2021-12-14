@@ -28,6 +28,7 @@
     <item name="message_text" type="id" />
     <item name="message_user" type="id" />
     <item name="message_time" type="id" />
+    <item name="message_date" type="id" />
     <item name="imgDps" type="id" />
     <item name="send_message" type="id" />
     <item name="message_edit_text" type="id" />

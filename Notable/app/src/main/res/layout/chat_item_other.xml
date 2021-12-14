@@ -7,7 +7,7 @@
     android:layout_marginTop="16dp">
 
     <TextView
-        android:id="@+id/text_chat_date_other"
+        android:id="@+id/message_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -22,23 +22,23 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/image_chat_profile_other"
+        android:id="@+id/imgDps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:contentDescription="@string/userIcon"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_chat_date_other" />
+        app:layout_constraintTop_toBottomOf="@+id/message_date" />
 
     <TextView
-        android:id="@+id/text_chat_user_other"
+        android:id="@+id/message_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/user_other"
         android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/image_chat_profile_other"
-        app:layout_constraintTop_toBottomOf="@+id/text_chat_date_other" />
+        app:layout_constraintStart_toEndOf="@+id/imgDps"
+        app:layout_constraintTop_toBottomOf="@+id/message_date" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_chat_message_other"
@@ -49,8 +49,8 @@
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true"
-        app:layout_constraintStart_toEndOf="@+id/image_chat_profile_other"
-        app:layout_constraintTop_toBottomOf="@+id/text_chat_user_other">
+        app:layout_constraintStart_toEndOf="@+id/imgDps"
+        app:layout_constraintTop_toBottomOf="@+id/message_user">
 
         <LinearLayout
             android:id="@+id/layout_chat_container_other"
@@ -59,7 +59,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_chat_message_other"
+                android:id="@+id/message_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -76,7 +76,7 @@
 
 
     <TextView
-        android:id="@+id/text_chat_timestamp_other"
+        android:id="@+id/message_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/time_other"

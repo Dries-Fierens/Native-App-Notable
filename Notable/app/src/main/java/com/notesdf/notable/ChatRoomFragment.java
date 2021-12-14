@@ -16,8 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -36,7 +39,7 @@ public class ChatRoomFragment extends Fragment {
     private static final String TAG = "Notable:ChatRoom";
     private FirebaseFirestore db;
     private Query query;
-    private FirestoreRecyclerAdapter<Message, MessageHolder> adapter;
+    private FirestoreRecyclerAdapter<Message, MessageAdapter.MessageHolder> adapter;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private ArrayList<Message> messageList = new ArrayList<>();
@@ -53,6 +56,20 @@ public class ChatRoomFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if(adapter!=null)
+            adapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(adapter!=null)
+            adapter.stopListening();
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chatroom_fragment, container, false);
         MaterialToolbar topBar = view.findViewById(R.id.topAppBar);
@@ -66,49 +83,29 @@ public class ChatRoomFragment extends Fragment {
         String title = this.getArguments().getString("buttonText");
         topBar.setTitle(title);
 
-        //https://medium.com/@mendhie/building-real-time-android-chatroom-with-firebase-99a5b51cb4f7
-        //gebruik geen document
-
-
         query = db.collection("messages").orderBy("messageTime");
-        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
-                    //pgBar.setVisibility(View.GONE);
-                }
-            }
-        });
         adapter = new MessageAdapter(getActivity(), query, key);
         chatRecyclerView.setAdapter(adapter);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String[] names = getName(email);
-                db.collection("messages").add(new Message(names[0], input.getText().toString(), key));
+                String text = input.getText().toString();
+                db.collection("users").document(key).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()){
+                            String firstName = documentSnapshot.get("firstname").toString();
+                            db.collection("messages").add(new Message(firstName, text, key));
+                        }else{
+                            Log.w(TAG, "No such document");
+                        }
+                    }
+                });
                 input.setText("");
             }
         });
 
         return view;
-    }
-
-    private String[] getName(String email){
-        String name = email.substring(0, email.indexOf("@"));
-        String[] names = new String[2];
-        if(!name.contains(".")){
-            name = name.substring(0, 1).toUpperCase() + name.substring(1);
-            names[0] = name;
-            names[1] = "";
-        }else{
-            String firstName = email.substring(0, email.indexOf("."));
-            firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1);
-            String lastName = email.substring(email.indexOf(".") + 1, email.indexOf("@"));
-            lastName = lastName.substring(0, 1).toUpperCase() + lastName.substring(1);
-            names[0] = firstName;
-            names[1] = lastName;
-        }
-        return names;
     }
 }

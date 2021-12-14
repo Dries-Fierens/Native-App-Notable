@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,24 +15,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ChatRoomFragment extends Fragment {
     private static final String TAG = "Notable:ChatRoom";
@@ -42,7 +33,6 @@ public class ChatRoomFragment extends Fragment {
     private FirestoreRecyclerAdapter<Message, MessageAdapter.MessageHolder> adapter;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
-    private ArrayList<Message> messageList = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,14 +66,13 @@ public class ChatRoomFragment extends Fragment {
         Button sendButton = view.findViewById(R.id.send_message);
         EditText input = view.findViewById(R.id.message_edit_text);
         RecyclerView chatRecyclerView = view.findViewById(R.id.chat_recyclerview);
-        String email = mAuth.getCurrentUser().getEmail();
         String key = mAuth.getCurrentUser().getUid();
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         String title = this.getArguments().getString("buttonText");
         topBar.setTitle(title);
 
-        query = db.collection("messages").orderBy("messageTime");
+        query = db.collection("messages").whereEqualTo("chatGroup", title).orderBy("messageTime");
         adapter = new MessageAdapter(getActivity(), query, key);
         chatRecyclerView.setAdapter(adapter);
 
@@ -96,7 +85,7 @@ public class ChatRoomFragment extends Fragment {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()){
                             String firstName = documentSnapshot.get("firstname").toString();
-                            db.collection("messages").add(new Message(firstName, text, key));
+                            db.collection("messages").add(new Message(firstName, text, key, title));
                         }else{
                             Log.w(TAG, "No such document");
                         }

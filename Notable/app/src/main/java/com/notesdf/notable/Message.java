@@ -11,10 +11,11 @@ public class Message {
     private String messageText;
     private String messageUserId;
     private long messageTime;
+    private String chatGroup;
 
     public Message(){}
 
-    public Message(String messageUser, String messageText, String messageUserId) {
+    public Message(String messageUser, String messageText, String messageUserId, String chatGroup) {
         this.messageUser = messageUser;
         this.messageText = messageText;
         Calendar cal = Calendar.getInstance();
@@ -22,6 +23,7 @@ public class Message {
         Date plus1 = cal.getTime();
         this.messageTime = plus1.getTime();
         this.messageUserId = messageUserId;
+        this.chatGroup = chatGroup;
     }
 
     public String getMessageUser() {
@@ -52,7 +54,10 @@ public class Message {
         return messageTime;
     }
 
-    public void setMessageTime(long messageTime) {
-        this.messageTime = messageTime;
-    }
+    public void setMessageTime(long messageTime) { this.messageTime = messageTime; }
+
+    public String getChatGroup() { return chatGroup; }
+
+    public void setChatGroup(String chatGroup) { this.chatGroup = chatGroup; }
+
 }

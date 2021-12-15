@@ -52,4 +52,10 @@
     <item name="groups_gridview" type="id" />
     <item name="group_button" type="id" />
     <item name="notes_gridview" type="id" />
+    <item name="contactEmail_edit_text" type="id" />
+    <item name="textarea_edit_text" type="id" />
+    <item name="send_complaint_button" type="id" />
+    <item name="contactEmail_textInput" type="id" />
+    <item name="subject_textInput" type="id" />
+    <item name="textarea_textInput" type="id" />
 </resources>

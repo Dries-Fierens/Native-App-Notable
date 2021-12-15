@@ -25,7 +25,8 @@ public class SettingsFragment extends Fragment {
         MaterialToolbar toolbar = view.findViewById(R.id.topAppBar);
         MaterialButton logoutButton = view.findViewById(R.id.logout_button);
         MaterialButton privacyButton = view.findViewById(R.id.privacy_button);
-        MaterialButton TermsButtons = view.findViewById(R.id.termsConditions_button);
+        MaterialButton termsButton = view.findViewById(R.id.termsConditions_button);
+        MaterialButton contactButton = view.findViewById(R.id.contactUs_button);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,11 +53,18 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        TermsButtons.setOnClickListener(new View.OnClickListener() {
+        termsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://pages.flycricket.io/notable/terms.html"));
                 startActivity(browserIntent);
+            }
+        });
+
+        contactButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((NavigationHost) getActivity()).navigateTo(new ContactUsFragment(), true);
             }
         });
 

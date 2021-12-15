@@ -79,10 +79,9 @@
                 android:id="@+id/textarea_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:lines="5"
-                android:maxLines="10"
-                android:layout_gravity="start"/>
+                android:inputType="text|textMultiLine"
+                android:gravity="top"
+                android:lines="10" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton

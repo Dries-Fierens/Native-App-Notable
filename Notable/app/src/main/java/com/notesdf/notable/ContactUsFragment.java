@@ -83,6 +83,9 @@ public class ContactUsFragment extends Fragment {
                     Complaint c = new Complaint(contactEmailEditText.getText().toString().trim(),
                             subjectEditText.getText().toString().trim(), descriptionEditText.getText().toString().trim(), currentUser.getUid());
                     db.collection("complaints").add(c);
+                    contactEmailEditText.setText("");
+                    subjectEditText.setText("");
+                    descriptionEditText.setText("");
                     Toast.makeText(getActivity(), "Your message has been received and we will contact you shortly", Toast.LENGTH_SHORT).show();
                 }
             }

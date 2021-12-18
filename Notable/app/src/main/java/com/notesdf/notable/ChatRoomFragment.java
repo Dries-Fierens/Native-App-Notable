@@ -7,11 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,8 +23,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
-
-import java.util.ArrayList;
 
 public class ChatRoomFragment extends Fragment {
     private static final String TAG = "Notable:ChatRoom";
@@ -43,22 +39,8 @@ public class ChatRoomFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(true).setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED).build();
-        db.setFirestoreSettings(settings);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if(adapter!=null)
-            adapter.startListening();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if(adapter!=null)
-            adapter.stopListening();
+        //FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(true).setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED).build();
+        //db.setFirestoreSettings(settings);
     }
 
     @Override
@@ -68,45 +50,60 @@ public class ChatRoomFragment extends Fragment {
         Button sendButton = view.findViewById(R.id.send_message);
         EditText input = view.findViewById(R.id.message_edit_text);
         RecyclerView chatRecyclerView = view.findViewById(R.id.chat_recyclerview);
+        chatRecyclerView.setHasFixedSize(true);// noodzakelijk voor SetStackFromEnd
         String key = mAuth.getCurrentUser().getUid();
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         layoutManager.setStackFromEnd(true);
-        layoutManager.setSmoothScrollbarEnabled(true);
         chatRecyclerView.setLayoutManager(layoutManager);
-
-
-
-        //https://stackoverflow.com/questions/31367599/how-to-update-recyclerview-adapter-data
-
-
 
         String title = this.getArguments().getString("buttonText");
         topBar.setTitle(title);
 
+        // Voeg zeker een index toe voor de query want anders werkt recyclerview in realtime met firestore
         query = db.collection("messages").whereEqualTo("chatGroup", title).orderBy("messageTime");
         adapter = new MessageAdapter(getActivity(), query, key);
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount) {
+                super.onItemRangeChanged(positionStart, itemCount);
+                chatRecyclerView.scrollToPosition(itemCount - 1);
+            }
+        });
         chatRecyclerView.setAdapter(adapter);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String text = input.getText().toString();
-                db.collection("users").document(key).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()){
-                            String firstName = documentSnapshot.get("firstname").toString();
-                            db.collection("messages").add(new Message(firstName, text, key, title));
-                        }else{
-                            Log.w(TAG, "No such document");
+                if(!text.equals("")){
+                    db.collection("users").document(key).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.exists()){
+                                String firstName = documentSnapshot.get("firstname").toString();
+                                db.collection("messages").add(new Message(firstName, text, key, title));
+                            }else{
+                                Log.w(TAG, "No such document");
+                            }
                         }
-                    }
-                });
+                    });
+                }
                 input.setText("");
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
     }
 }

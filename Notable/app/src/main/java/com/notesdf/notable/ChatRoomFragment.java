@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -67,7 +69,17 @@ public class ChatRoomFragment extends Fragment {
         EditText input = view.findViewById(R.id.message_edit_text);
         RecyclerView chatRecyclerView = view.findViewById(R.id.chat_recyclerview);
         String key = mAuth.getCurrentUser().getUid();
-        chatRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        layoutManager.setStackFromEnd(true);
+        layoutManager.setSmoothScrollbarEnabled(true);
+        chatRecyclerView.setLayoutManager(layoutManager);
+
+
+
+        //https://stackoverflow.com/questions/31367599/how-to-update-recyclerview-adapter-data
+
+
 
         String title = this.getArguments().getString("buttonText");
         topBar.setTitle(title);

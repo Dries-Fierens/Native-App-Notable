@@ -19,7 +19,7 @@ public class Message {
         this.messageUser = messageUser;
         this.messageText = messageText;
         Calendar cal = Calendar.getInstance();
-        cal.setTimeZone(TimeZone.getTimeZone("GMT" + 1));
+        //cal.setTimeZone(TimeZone.getTimeZone("GMT" + 1));
         Date plus1 = cal.getTime();
         this.messageTime = plus1.getTime();
         this.messageUserId = messageUserId;

@@ -39,8 +39,6 @@ public class ChatRoomFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
-        //FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(true).setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED).build();
-        //db.setFirestoreSettings(settings);
     }
 
     @Override
@@ -66,7 +64,8 @@ public class ChatRoomFragment extends Fragment {
             @Override
             public void onItemRangeChanged(int positionStart, int itemCount) {
                 super.onItemRangeChanged(positionStart, itemCount);
-                chatRecyclerView.scrollToPosition(itemCount - 1);
+                chatRecyclerView.smoothScrollToPosition(itemCount - 1);
+                //smoothScrollToPosition ipv scrollToPosition
             }
         });
         chatRecyclerView.setAdapter(adapter);

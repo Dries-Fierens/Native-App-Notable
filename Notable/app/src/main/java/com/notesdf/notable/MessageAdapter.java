@@ -71,8 +71,8 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message, MessageAda
         }
         mText.setText(model.getMessageText());
         mDate.setText(DateFormat.format("dd MMM", model.getMessageTime()));
-        mTime.setText(DateFormat.format("h:mm", model.getMessageTime()));
-
+        mTime.setText(DateFormat.format("kk:mm", model.getMessageTime()));
+        //kk = 13, hh = 01 pm
     }
 
     static class MessageHolder extends RecyclerView.ViewHolder {

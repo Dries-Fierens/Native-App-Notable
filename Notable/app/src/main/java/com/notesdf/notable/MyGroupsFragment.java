@@ -10,8 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ProgressBar;
@@ -22,10 +20,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -68,10 +64,10 @@ public class MyGroupsFragment extends Fragment {
         BottomNavigationView bottomNav = view.findViewById(R.id.bottomAppBar);
         MaterialToolbar topAppBar = view.findViewById(R.id.topAppBar);
         mProgressCircle = view.findViewById(R.id.progress_circle);
-        key = mAuth.getCurrentUser().getUid();
+        key = currentUser.getUid();
 
         gridView = view.findViewById(R.id.groups_gridview);
-        // Offline
+        // Offline cache ophalen zodat de groepen sneller inladen
         setOfflineGroups();
         // Online
         db.collection("groups").document(key).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -184,6 +180,13 @@ public class MyGroupsFragment extends Fragment {
         HashMap<String, ArrayList<String>> groupData = new HashMap<>();
         groupList.add(groupName);
         groupData.put("group_names", groupList);
+
+
+        //Belangrijk!!!!!!!!!
+        //db.collection("users").document(key).collection("groups").document(key).set(groupData);
+
+
+
         db.collection("groups").document(key).set(groupData).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {

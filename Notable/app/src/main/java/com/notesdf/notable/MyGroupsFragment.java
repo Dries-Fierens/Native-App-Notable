@@ -20,20 +20,31 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
+import java.security.acl.Group;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MyGroupsFragment extends Fragment {
 
@@ -45,7 +56,9 @@ public class MyGroupsFragment extends Fragment {
     private String key;
     private GroupAdapter adapter;
     private FirebaseFirestore db;
-    private ArrayList<String> groupList = new ArrayList<>();
+    private ArrayList<String> chatroomList = new ArrayList<>();
+    private ArrayList<String> users = new ArrayList<>();
+    private ArrayList<String> admin = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,36 +78,40 @@ public class MyGroupsFragment extends Fragment {
         MaterialToolbar topAppBar = view.findViewById(R.id.topAppBar);
         mProgressCircle = view.findViewById(R.id.progress_circle);
         key = currentUser.getUid();
+        admin.add(key);
 
         gridView = view.findViewById(R.id.groups_gridview);
         // Offline cache ophalen zodat de groepen sneller inladen
         setOfflineGroups();
         // Online
-        db.collection("users").document(key).collection("groups").document(key).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        db.collection("users").document(key).collection("groups").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    groupList = (ArrayList<String>) documentSnapshot.get("group_names");
-                    Log.w(TAG, "DocumentSnapshot data: " + documentSnapshot.getData());
-                    if(groupList != null){
-                        adapter = new GroupAdapter(getActivity(), groupList);
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    chatroomList = new ArrayList<>();
+                    for (QueryDocumentSnapshot document: task.getResult()) {
+                        chatroomList.add(document.toObject(Chatroom.class).getGroupName());
+                    }
+                    if(chatroomList != null){
+                        Collections.sort(chatroomList);
+                        adapter = new GroupAdapter(getActivity(), chatroomList);
                         Log.w(TAG, adapter.toString());
                         //https://stackoverflow.com/questions/218384/what-is-a-nullpointerexception-and-how-do-i-fix-it
                         //nullpointException wordt gegeven omdat de gridview null was niet de adapter en er dus een methode werdt op opgeroepen.
                         gridView.setAdapter(adapter);
                         mProgressCircle.setVisibility(View.INVISIBLE);
                     }else{
-                        groupList = new ArrayList<>();
+                        chatroomList = new ArrayList<>();
                         Toast.makeText(getActivity(), "Je hebt geen chatgroepen", Toast.LENGTH_LONG).show();
                     }
-                } else {
-                    Log.w(TAG, "No such document");
+                }else{
+                    Log.w(TAG, "Empty query snapshot");
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "Error getting documents: " + e.getMessage());
+                Log.w(TAG, "Error getting query snapshot: " + e.getMessage());
             }
         });
 
@@ -135,7 +152,7 @@ public class MyGroupsFragment extends Fragment {
                 if (item.getItemId() == R.id.settings){
                     ((NavigationHost) getActivity()).navigateTo(new SettingsFragment(), true);
                 }else{
-                    RequestNewGroup();
+                    selectGroupOption();
                 }
                 return true;
             }
@@ -144,11 +161,95 @@ public class MyGroupsFragment extends Fragment {
         return view;
     }
 
+    private void selectGroupOption() {
+        final CharSequence[] options = { "Create new group", "Join group","Cancel" };
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Add group");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("Create new group"))
+                {
+                    RequestNewGroup();
+                }
+                else if (options[item].equals("Join group"))
+                {
+                    RequestJoinGroup();
+                }
+                else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void RequestJoinGroup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Enter groepsnaam waar je aan wil meedoen: ");
+        final EditText groupNameField = new EditText(getActivity());
+        groupNameField.setHint("bv. Schoolgroep");
+        groupNameField.setWidth(100);
+        builder.setView(groupNameField);
+
+        builder.setPositiveButton("Join", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String groupName = groupNameField.getText().toString();
+                Boolean exist = false;
+                for (String chatroom : chatroomList) {
+                    if(chatroom.equals(groupName)){
+                        exist = true;
+                        break;
+                    }
+                }
+                if(TextUtils.isEmpty(groupName)){
+                    Toast.makeText(getActivity(), "Schrijf een groepsnaam AUB...", Toast.LENGTH_LONG).show();
+                }else if (groupName.length() > 20){
+                    Toast.makeText(getActivity(), "Groepsnaam is te lang", Toast.LENGTH_LONG).show();
+                }else if (exist){
+                    Toast.makeText(getActivity(), "Je zit al in deze groep", Toast.LENGTH_LONG).show();
+                }else{
+                    JoinGroup(groupName);
+                }
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void JoinGroup(String groupName){
+        HashMap<String, Object> groupData = new HashMap<>();
+        chatroomList.add(groupName);
+        groupData.put("chat_rooms", chatroomList);
+        groupData.put("adminId", key);
+
+        db.collection("users").document(key).collection("groups").document(key).set(groupData).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.w(TAG, "New group added successfully to Firestore");
+                ((NavigationHost) getActivity()).navigateTo(new MyGroupsFragment(), false);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "Failed adding new group to firestore", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     private void RequestNewGroup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Enter groep naam: ");
+        builder.setTitle("Enter groepsnaam: ");
         final EditText groupNameField = new EditText(getActivity());
-        groupNameField.setHint("bv. School groep");
+        groupNameField.setHint("bv. Schoolgroep");
         groupNameField.setWidth(100);
         builder.setView(groupNameField);
 
@@ -156,10 +257,19 @@ public class MyGroupsFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String groupName = groupNameField.getText().toString();
+                Boolean exist = false;
+                for (String chatroom : chatroomList) {
+                    if(chatroom.equals(groupName)){
+                        exist = true;
+                        break;
+                    }
+                }
                 if(TextUtils.isEmpty(groupName)){
-                    Toast.makeText(getActivity(), "Schrijf een groepnaam AUB...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Schrijf een groepsnaam AUB...", Toast.LENGTH_LONG).show();
                 }else if (groupName.length() > 20){
-                    Toast.makeText(getActivity(), "Groepnaam is te lang", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Groepsnaam is te lang", Toast.LENGTH_LONG).show();
+                }else if (exist){
+                    Toast.makeText(getActivity(), "Je hebt deze groep al toegevoegd", Toast.LENGTH_LONG).show();
                 }else{
                     CreateNewGroup(groupName);
                 }
@@ -177,14 +287,13 @@ public class MyGroupsFragment extends Fragment {
     }
 
     private void CreateNewGroup(String groupName) {
-        HashMap<String, Object> groupData = new HashMap<>();
-        groupList.add(groupName);
-        groupData.put("group_names", groupList);
-        groupData.put("adminId", key);
+        //HashMap<String, ArrayList<String>> groupData = new HashMap<>();
+        //chatroomList.add(groupName);
+        //groupData.put("chat_rooms", chatroomList);
 
-        db.collection("users").document(key).collection("groups").document(key).set(groupData).addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("users").document(key).collection("groups").add(new Chatroom(key, groupName, admin)).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
-            public void onSuccess(Void unused) {
+            public void onSuccess(@NonNull DocumentReference documentReference) {
                 Log.w(TAG, "New group added successfully to Firestore");
                 ((NavigationHost) getActivity()).navigateTo(new MyGroupsFragment(), false);
             }
@@ -199,19 +308,23 @@ public class MyGroupsFragment extends Fragment {
     private void setOfflineGroups(){
         //https://firebase.google.com/docs/firestore/query-data/get-data#source_options
         Source source = Source.CACHE; // moet pas gebruikt worden als we offline zijn!!!
-        db.collection("groups").document(key).get(source).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        db.collection("users").document(key).collection("groups").get(source).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    groupList = (ArrayList<String>) documentSnapshot.get("group_names");
-                } else {
-                    Log.w(TAG, "No such document");
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                chatroomList = new ArrayList<>();
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document: task.getResult()) {
+                        chatroomList.add(document.toObject(Chatroom.class).getGroupName());
+                    }
+                    Collections.sort(chatroomList);
+                }else{
+                    Log.w(TAG, "Empty query snapshot");
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "Error getting documents: " + e.getMessage());
+                Log.w(TAG, "Error getting query snapshot: " + e.getMessage());
             }
         });
     }

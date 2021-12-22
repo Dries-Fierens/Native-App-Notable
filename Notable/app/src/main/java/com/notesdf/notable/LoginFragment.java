@@ -211,6 +211,8 @@ public class LoginFragment extends Fragment {
         userData.put("firstname", names[0]);
         userData.put("lastname", names[1]);
         userData.put("email", email);
+        userData.put("userId", key);
+
         db.collection("users").document(key).set(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {

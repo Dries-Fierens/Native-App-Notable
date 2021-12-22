@@ -18,6 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:title="@string/chat_group"
+            app:menu="@menu/chat_menu"
+            app:navigationIcon="@drawable/return_button"
             style="@style/Widget.MaterialComponents.Toolbar.Primary" />
     </com.google.android.material.appbar.AppBarLayout>
 

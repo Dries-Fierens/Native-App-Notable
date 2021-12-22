@@ -70,7 +70,7 @@ public class MyGroupsFragment extends Fragment {
         // Offline cache ophalen zodat de groepen sneller inladen
         setOfflineGroups();
         // Online
-        db.collection("groups").document(key).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        db.collection("users").document(key).collection("groups").document(key).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
@@ -177,17 +177,12 @@ public class MyGroupsFragment extends Fragment {
     }
 
     private void CreateNewGroup(String groupName) {
-        HashMap<String, ArrayList<String>> groupData = new HashMap<>();
+        HashMap<String, Object> groupData = new HashMap<>();
         groupList.add(groupName);
         groupData.put("group_names", groupList);
+        groupData.put("adminId", key);
 
-
-        //Belangrijk!!!!!!!!!
-        //db.collection("users").document(key).collection("groups").document(key).set(groupData);
-
-
-
-        db.collection("groups").document(key).set(groupData).addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("users").document(key).collection("groups").document(key).set(groupData).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 Log.w(TAG, "New group added successfully to Firestore");

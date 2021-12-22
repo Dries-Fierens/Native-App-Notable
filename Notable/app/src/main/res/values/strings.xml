@@ -48,4 +48,7 @@
     <string name="error_email">This email is not valid</string>
     <string name="error_subject">Please give a subject</string>
     <string name="error_description">Please describe your problem</string>
+    <string name="dots" />
+    <string name="content_description_dots">dots</string>
+    <string name="content_description_add_chat_image">add image to chat</string>
 </resources>

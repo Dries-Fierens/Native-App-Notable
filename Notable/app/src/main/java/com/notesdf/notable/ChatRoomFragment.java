@@ -44,7 +44,7 @@ public class ChatRoomFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chatroom_fragment, container, false);
-        MaterialToolbar topBar = view.findViewById(R.id.topAppBar);
+        MaterialToolbar toolbar = view.findViewById(R.id.topAppBar);
         Button sendButton = view.findViewById(R.id.send_message);
         EditText input = view.findViewById(R.id.message_edit_text);
         RecyclerView chatRecyclerView = view.findViewById(R.id.chat_recyclerview);
@@ -55,7 +55,7 @@ public class ChatRoomFragment extends Fragment {
         chatRecyclerView.setLayoutManager(layoutManager);
 
         String title = this.getArguments().getString("buttonText");
-        topBar.setTitle(title);
+        toolbar.setTitle(title);
 
         // Voeg zeker een index toe voor de query want anders werkt recyclerview in realtime met firestore
         query = db.collection("messages").whereEqualTo("chatGroup", title).orderBy("messageTime");
@@ -88,6 +88,13 @@ public class ChatRoomFragment extends Fragment {
                     });
                 }
                 input.setText("");
+            }
+        });
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 

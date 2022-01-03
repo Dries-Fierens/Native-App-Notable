@@ -170,11 +170,11 @@ public class MyGroupsFragment extends Fragment {
             public void onClick(DialogInterface dialog, int item) {
                 if (options[item].equals("Create new group"))
                 {
-                    RequestNewGroup();
+                    requestNewGroup();
                 }
                 else if (options[item].equals("Join group"))
                 {
-                    RequestJoinGroup();
+                    showInvites();
                 }
                 else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
@@ -184,68 +184,11 @@ public class MyGroupsFragment extends Fragment {
         builder.show();
     }
 
-    private void RequestJoinGroup() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Enter groepsnaam waar je aan wil meedoen: ");
-        final EditText groupNameField = new EditText(getActivity());
-        groupNameField.setHint("bv. Schoolgroep");
-        groupNameField.setWidth(100);
-        builder.setView(groupNameField);
+    private void showInvites() {
 
-        builder.setPositiveButton("Join", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                String groupName = groupNameField.getText().toString();
-                Boolean exist = false;
-                for (String chatroom : chatroomList) {
-                    if(chatroom.equals(groupName)){
-                        exist = true;
-                        break;
-                    }
-                }
-                if(TextUtils.isEmpty(groupName)){
-                    Toast.makeText(getActivity(), "Schrijf een groepsnaam AUB...", Toast.LENGTH_LONG).show();
-                }else if (groupName.length() > 20){
-                    Toast.makeText(getActivity(), "Groepsnaam is te lang", Toast.LENGTH_LONG).show();
-                }else if (exist){
-                    Toast.makeText(getActivity(), "Je zit al in deze groep", Toast.LENGTH_LONG).show();
-                }else{
-                    JoinGroup(groupName);
-                }
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
-
-        builder.show();
     }
 
-    private void JoinGroup(String groupName){
-        HashMap<String, Object> groupData = new HashMap<>();
-        chatroomList.add(groupName);
-        groupData.put("chat_rooms", chatroomList);
-        groupData.put("adminId", key);
-
-        db.collection("users").document(key).collection("groups").document(key).set(groupData).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.w(TAG, "New group added successfully to Firestore");
-                ((NavigationHost) getActivity()).navigateTo(new MyGroupsFragment(), false);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity(), "Failed adding new group to firestore", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void RequestNewGroup() {
+    private void requestNewGroup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Enter groepsnaam: ");
         final EditText groupNameField = new EditText(getActivity());
@@ -271,7 +214,7 @@ public class MyGroupsFragment extends Fragment {
                 }else if (exist){
                     Toast.makeText(getActivity(), "Je hebt deze groep al toegevoegd", Toast.LENGTH_LONG).show();
                 }else{
-                    CreateNewGroup(groupName);
+                    createNewGroup(groupName);
                 }
             }
         });
@@ -286,7 +229,7 @@ public class MyGroupsFragment extends Fragment {
         builder.show();
     }
 
-    private void CreateNewGroup(String groupName) {
+    private void createNewGroup(String groupName) {
         //HashMap<String, ArrayList<String>> groupData = new HashMap<>();
         //chatroomList.add(groupName);
         //groupData.put("chat_rooms", chatroomList);

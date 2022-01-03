@@ -8,11 +8,12 @@
         android:title="@string/add"
         android:contentDescription="@string/content_description_add_chat_image"
         app:showAsAction="ifRoom" />
+
     <item
-        android:id="@+id/settings"
-        android:icon="@drawable/dots"
-        android:title="@string/dots"
-        android:contentDescription="@string/content_description_dots"
-        app:showAsAction="ifRoom" />
+        android:title="@string/invite_user"
+        android:id="@+id/add_user" />
+    <item
+        android:title="@string/remove_user"
+        android:id="@+id/remove_user" />
 
 </menu>

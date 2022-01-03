@@ -58,4 +58,6 @@
     <item name="contactEmail_textInput" type="id" />
     <item name="subject_textInput" type="id" />
     <item name="textarea_textInput" type="id" />
+    <item name="remove_user" type="id" />
+    <item name="invite_user" type="id" />
 </resources>

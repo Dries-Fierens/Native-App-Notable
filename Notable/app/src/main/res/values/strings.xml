@@ -51,4 +51,6 @@
     <string name="dots" />
     <string name="content_description_dots">dots</string>
     <string name="content_description_add_chat_image">add image to chat</string>
+    <string name="invite_user">Invite user</string>
+    <string name="remove_user">Remove user</string>
 </resources>

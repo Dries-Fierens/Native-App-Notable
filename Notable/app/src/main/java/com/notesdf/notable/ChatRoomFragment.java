@@ -1,15 +1,21 @@
 package com.notesdf.notable;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,6 +62,7 @@ public class ChatRoomFragment extends Fragment {
 
         String title = this.getArguments().getString("buttonText");
         toolbar.setTitle(title);
+        toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.dots));
 
         // Voeg zeker een index toe voor de query want anders werkt recyclerview in realtime met firestore
         query = db.collection("messages").whereEqualTo("chatGroup", title).orderBy("messageTime");
@@ -98,7 +105,35 @@ public class ChatRoomFragment extends Fragment {
             }
         });
 
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.add_image){
+                    addImage();
+                }else if (item.getItemId() == R.id.invite_user){
+                    Toast.makeText(getActivity(), "test", Toast.LENGTH_LONG).show();
+                    Log.w(TAG, "onMenuItemClick: ");
+                    inviteUser();
+                }else{
+                    removeUser();
+                }
+                return true;
+            }
+        });
+
         return view;
+    }
+
+    private void addImage() {
+
+    }
+
+    private void inviteUser() {
+
+    }
+
+    private void removeUser() {
+
     }
 
     @Override

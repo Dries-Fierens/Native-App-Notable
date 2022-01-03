@@ -48,9 +48,19 @@ public class ChatRoomFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        // https://stackoverflow.com/questions/15653737/oncreateoptionsmenu-inside-fragments
+        // setsupportactionbar & setHasOptionsMenu in oncreateview zijn ook noodzakelijk
+        inflater.inflate(R.menu.chat_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chatroom_fragment, container, false);
         MaterialToolbar toolbar = view.findViewById(R.id.topAppBar);
+        ((MainActivity) getActivity()).setSupportActionBar(toolbar);
+        setHasOptionsMenu(true);
         Button sendButton = view.findViewById(R.id.send_message);
         EditText input = view.findViewById(R.id.message_edit_text);
         RecyclerView chatRecyclerView = view.findViewById(R.id.chat_recyclerview);
@@ -108,11 +118,10 @@ public class ChatRoomFragment extends Fragment {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.add_image){
+                int id = item.getItemId();
+                if (id == R.id.add_image){
                     addImage();
-                }else if (item.getItemId() == R.id.invite_user){
-                    Toast.makeText(getActivity(), "test", Toast.LENGTH_LONG).show();
-                    Log.w(TAG, "onMenuItemClick: ");
+                }else if(id == R.id.invite_user){
                     inviteUser();
                 }else{
                     removeUser();
@@ -125,15 +134,15 @@ public class ChatRoomFragment extends Fragment {
     }
 
     private void addImage() {
-
+        Log.w(TAG, "add image");
     }
 
     private void inviteUser() {
-
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     private void removeUser() {
-
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     @Override

@@ -11,7 +11,7 @@
 
     <item
         android:title="@string/invite_user"
-        android:id="@+id/add_user" />
+        android:id="@+id/invite_user" />
     <item
         android:title="@string/remove_user"
         android:id="@+id/remove_user" />

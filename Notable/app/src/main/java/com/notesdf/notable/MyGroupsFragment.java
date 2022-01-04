@@ -81,8 +81,6 @@ public class MyGroupsFragment extends Fragment {
         admin.add(key);
 
         gridView = view.findViewById(R.id.groups_gridview);
-        // Offline cache ophalen zodat de groepen sneller inladen
-        setOfflineGroups();
         // Online
         db.collection("users").document(key).collection("groups").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -114,6 +112,9 @@ public class MyGroupsFragment extends Fragment {
                 Log.w(TAG, "Error getting query snapshot: " + e.getMessage());
             }
         });
+
+        // Offline cache ophalen zodat de groepen sneller inladen
+        setOfflineGroups();
 
         // getHeight wordt 0 omdat de view nog niet gesized is en op het scherm wordt getoond, dus deze methode verhelpt dit.
         view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener()

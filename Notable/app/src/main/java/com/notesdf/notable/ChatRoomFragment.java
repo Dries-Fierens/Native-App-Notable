@@ -1,7 +1,9 @@
 package com.notesdf.notable;
 
-import android.graphics.drawable.Drawable;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,14 +23,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class ChatRoomFragment extends Fragment {
     private static final String TAG = "Notable:ChatRoom";
@@ -37,6 +45,8 @@ public class ChatRoomFragment extends Fragment {
     private FirestoreRecyclerAdapter<Message, MessageAdapter.MessageHolder> adapter;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+    private String key;
+    private String title;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,6 +54,7 @@ public class ChatRoomFragment extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+        key = currentUser.getUid();
         db = FirebaseFirestore.getInstance();
     }
 
@@ -65,12 +76,11 @@ public class ChatRoomFragment extends Fragment {
         EditText input = view.findViewById(R.id.message_edit_text);
         RecyclerView chatRecyclerView = view.findViewById(R.id.chat_recyclerview);
         chatRecyclerView.setHasFixedSize(true);// noodzakelijk voor SetStackFromEnd
-        String key = mAuth.getCurrentUser().getUid();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         layoutManager.setStackFromEnd(true);
         chatRecyclerView.setLayoutManager(layoutManager);
 
-        String title = this.getArguments().getString("buttonText");
+        title = this.getArguments().getString("buttonText");
         toolbar.setTitle(title);
         toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.dots));
 
@@ -138,11 +148,87 @@ public class ChatRoomFragment extends Fragment {
     }
 
     private void inviteUser() {
-        getActivity().getSupportFragmentManager().popBackStack();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Enter email van de gebruiker die je wil uitnodigen: ");
+        final EditText emailField = new EditText(getActivity());
+        emailField.setHint("bv. example@gmail.com");
+        emailField.setWidth(100);
+        builder.setView(emailField);
+
+        builder.setPositiveButton("Invite", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String email = emailField.getText().toString().trim();
+                db.collection("users").document(key).collection("groups").whereEqualTo("groupName", title)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            Log.w(TAG, "Input emailField: " + email);
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                sendInvite(email, document);
+                            }
+                        }else{
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     private void removeUser() {
-        getActivity().getSupportFragmentManager().popBackStack();
+        Toast.makeText(getActivity(), "In progress", Toast.LENGTH_LONG).show();
+    }
+
+    public void sendInvite(String email, QueryDocumentSnapshot groupDocument){
+        db.collection("users").whereEqualTo("email", email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    if (TextUtils.isEmpty(email)){
+                        Toast.makeText(getActivity(), "Vul een email aub...", Toast.LENGTH_LONG).show();
+                    }else if (!isValidEmailAddress(email)){
+                        Log.w(TAG, "Ongeldige email");
+                        Toast.makeText(getActivity(), "Ongeldige email", Toast.LENGTH_LONG).show();
+                    }else{
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Log.d(TAG, document.getId() + " => " + document.getData());
+                            String userId = document.getId();
+                            Log.w(TAG, "onComplete sendInvite:" + groupDocument.toObject(Chatroom.class).toString());
+                            db.collection("users").document(userId)
+                                    .collection("invites")
+                                    .add(new Invite(groupDocument.toObject(Chatroom.class)));
+                        }
+                    }
+                }else{
+                    Toast.makeText(getActivity(), "Kan gebruiker niet vinden", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
+    }
+
+    private static boolean isValidEmailAddress(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+
+        Pattern pat = Pattern.compile(emailRegex);
+        if (email == null)
+            return false;
+        return pat.matcher(email).matches();
     }
 
     @Override

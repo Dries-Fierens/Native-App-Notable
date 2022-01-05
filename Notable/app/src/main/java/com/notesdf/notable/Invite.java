@@ -4,10 +4,14 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class Invite {
     private Chatroom chatroom;
+    private String documentId;
+    private String receiver;
     private boolean accepted;
 
-    public Invite(Chatroom chatroom) {
+    public Invite(Chatroom chatroom, String documentId, String receiver) {
         this.chatroom = chatroom;
+        this.documentId = documentId;
+        this.receiver = receiver;
         this.accepted = false;
     }
 
@@ -17,6 +21,22 @@ public class Invite {
 
     public void setChatroom(Chatroom chatroom) {
         this.chatroom = chatroom;
+    }
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
     public boolean isAccepted() {

@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -35,7 +36,6 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class ChatRoomFragment extends Fragment {
@@ -82,7 +82,7 @@ public class ChatRoomFragment extends Fragment {
 
         title = this.getArguments().getString("buttonText");
         toolbar.setTitle(title);
-        toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.dots));
+        toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.invite));
 
         // Voeg zeker een index toe voor de query want anders werkt recyclerview in realtime met firestore
         query = db.collection("messages").whereEqualTo("chatGroup", title).orderBy("messageTime");
@@ -198,7 +198,7 @@ public class ChatRoomFragment extends Fragment {
                 if(task.isSuccessful()){
                     if (TextUtils.isEmpty(email)){
                         Toast.makeText(getActivity(), "Vul een email aub...", Toast.LENGTH_LONG).show();
-                    }else if (!isValidEmailAddress(email)){
+                    }else if (!isValidEmailAddress(email)) {
                         Log.w(TAG, "Ongeldige email");
                         Toast.makeText(getActivity(), "Ongeldige email", Toast.LENGTH_LONG).show();
                     }else{
@@ -206,9 +206,25 @@ public class ChatRoomFragment extends Fragment {
                             Log.d(TAG, document.getId() + " => " + document.getData());
                             String userId = document.getId();
                             Log.w(TAG, "onComplete sendInvite:" + groupDocument.toObject(Chatroom.class).toString());
-                            db.collection("users").document(userId)
-                                    .collection("invites")
-                                    .add(new Invite(groupDocument.toObject(Chatroom.class)));
+                            //dubbele invites vermijden
+                            Query documentId = db.collection("users").document(key)
+                                    .collection("invites").whereEqualTo("receiver", email);
+                            documentId.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(@NonNull QuerySnapshot queryDocumentSnapshots) {
+                                    if (queryDocumentSnapshots.getDocuments().isEmpty()){
+                                        db.collection("users").document(userId)
+                                                .collection("invites")
+                                                .add(new Invite(groupDocument.toObject(Chatroom.class), groupDocument.getId(), email));
+                                        db.collection("users").document(key)
+                                                .collection("invites")
+                                                .add(new Invite(groupDocument.toObject(Chatroom.class), groupDocument.getId(), email));
+                                        Toast.makeText(getActivity(), "Uitnodiging verstuurd", Toast.LENGTH_LONG).show();
+                                    }else{
+                                        Toast.makeText(getActivity(), "Je hebt al een uitnodiging gestuurd naar deze persoon", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
                         }
                     }
                 }else{

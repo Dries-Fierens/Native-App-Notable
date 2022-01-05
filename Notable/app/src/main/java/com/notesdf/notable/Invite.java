@@ -8,6 +8,8 @@ public class Invite {
     private String receiver;
     private boolean accepted;
 
+    public Invite(){}
+
     public Invite(Chatroom chatroom, String documentId, String receiver) {
         this.chatroom = chatroom;
         this.documentId = documentId;
@@ -45,5 +47,15 @@ public class Invite {
 
     public void setAccepted(boolean accepted) {
         this.accepted = accepted;
+    }
+
+    @Override
+    public String toString() {
+        return "Invite{" +
+                "chatroom=" + chatroom +
+                ", documentId='" + documentId + '\'' +
+                ", receiver='" + receiver + '\'' +
+                ", accepted=" + accepted +
+                '}';
     }
 }

@@ -30,21 +30,15 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
-import java.security.acl.Group;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class MyGroupsFragment extends Fragment {
 
@@ -59,6 +53,7 @@ public class MyGroupsFragment extends Fragment {
     private ArrayList<String> chatroomList = new ArrayList<>();
     private ArrayList<String> users = new ArrayList<>();
     private ArrayList<String> admin = new ArrayList<>();
+    private ArrayList<Invite> invites;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -163,7 +158,7 @@ public class MyGroupsFragment extends Fragment {
     }
 
     private void selectGroupOption() {
-        final CharSequence[] options = { "Create new group", "Join group","Cancel" };
+        final CharSequence[] options = { "Create new group", "Invites","Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Add group");
         builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -173,7 +168,7 @@ public class MyGroupsFragment extends Fragment {
                 {
                     requestNewGroup();
                 }
-                else if (options[item].equals("Join group"))
+                else if (options[item].equals("Invites"))
                 {
                     showInvites();
                 }
@@ -186,7 +181,59 @@ public class MyGroupsFragment extends Fragment {
     }
 
     private void showInvites() {
+        ArrayList<String> documentIds = new ArrayList<>();
+        Query invitations = db.collection("users").document(key).collection("invites")
+                .whereEqualTo("receiver", currentUser.getEmail()).whereEqualTo("accepted", false);
+        invitations.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    invites = new ArrayList<>();
+                    for (QueryDocumentSnapshot document: task.getResult()) {
+                        documentIds.add(document.getId());
+                        invites.add(document.toObject(Invite.class));
+                    }
+                    Log.w(TAG, "showInvites: " + invites);
+                    clickInvite(documentIds);
+                }else{
+                    Log.w(TAG, "Empty query snapshot");
+                }
+            }
+        });
+    }
 
+    private void clickInvite(ArrayList<String> documentIds) {
+        CharSequence[] options = new CharSequence[invites.size() + 1];
+        for (int i = 0; i <= invites.size() - 1; i++) {
+            options[i] = invites.get(i).getChatroom().getGroupName();
+        }
+        options[invites.size()] = "Cancel";
+        AlertDialog.Builder invitesBuilder = new AlertDialog.Builder(getActivity());
+        invitesBuilder.setTitle("Invites");
+        invitesBuilder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(options[i].equals("Cancel")){
+                    dialogInterface.dismiss();
+                }else{
+                    Invite accepted = invites.get(i);
+                    accepted.setAccepted(true);
+                    Chatroom joined = accepted.getChatroom();
+                    users = joined.getUsers();
+                    users.add(currentUser.getUid());
+                    joined.setUsers(users);
+                    accepted.setChatroom(joined);
+                    Log.w(TAG, "onClick invite: " + accepted);
+                    db.collection("users").document(key)
+                            .collection("invites").document(documentIds.get(i)).set(accepted);
+                    db.collection("users").document(joined.getAdminId())
+                            .collection("groups").document(accepted.getDocumentId()).set(joined);
+                    db.collection("users").document(key)
+                            .collection("groups").add(joined);
+                }
+            }
+        });
+        invitesBuilder.show();
     }
 
     private void requestNewGroup() {

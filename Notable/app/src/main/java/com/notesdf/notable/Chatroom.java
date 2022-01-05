@@ -38,4 +38,13 @@ public class Chatroom {
     public void setUsers(ArrayList<String> users) {
         this.users = users;
     }
+
+    @Override
+    public String toString() {
+        return "Chatroom{" +
+                "adminId='" + adminId + '\'' +
+                ", groupName='" + groupName + '\'' +
+                ", users=" + users +
+                '}';
+    }
 }

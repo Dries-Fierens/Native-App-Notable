@@ -36,6 +36,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class ChatRoomFragment extends Fragment {
@@ -47,6 +48,8 @@ public class ChatRoomFragment extends Fragment {
     private FirebaseUser currentUser;
     private String key;
     private String title;
+    private ArrayList<String> users;
+    private String adminId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,7 +87,7 @@ public class ChatRoomFragment extends Fragment {
         toolbar.setTitle(title);
         toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.invite));
 
-        // Voeg zeker een index toe voor de query want anders werkt recyclerview in realtime met firestore
+        // Voeg zeker een index (in firestore) toe voor de query want anders werkt recyclerview in realtime met firestore
         query = db.collection("messages").whereEqualTo("chatGroup", title).orderBy("messageTime");
         adapter = new MessageAdapter(getActivity(), query, key);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -107,7 +110,19 @@ public class ChatRoomFragment extends Fragment {
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             if (documentSnapshot.exists()){
                                 String firstName = documentSnapshot.get("firstname").toString();
-                                db.collection("messages").add(new Message(firstName, text, key, title));
+                                db.collection("users").document(key)
+                                        .collection("groups").whereEqualTo("groupName", title).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if(task.isSuccessful()){
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                db.collection("messages").add(new Message(firstName, text, key, title, document.get("adminId").toString()));
+                                            }
+                                        }else{
+                                            Log.d(TAG, "Error getting documents: ", task.getException());
+                                        }
+                                    }
+                                });
                             }else{
                                 Log.w(TAG, "No such document");
                             }

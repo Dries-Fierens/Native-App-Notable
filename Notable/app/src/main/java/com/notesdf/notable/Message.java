@@ -12,10 +12,11 @@ public class Message {
     private String messageUserId;
     private long messageTime;
     private String chatGroup;
+    private String adminId;
 
     public Message(){}
 
-    public Message(String messageUser, String messageText, String messageUserId, String chatGroup) {
+    public Message(String messageUser, String messageText, String messageUserId, String chatGroup, String adminId) {
         this.messageUser = messageUser;
         this.messageText = messageText;
         Calendar cal = Calendar.getInstance();
@@ -24,6 +25,7 @@ public class Message {
         this.messageTime = plus1.getTime();
         this.messageUserId = messageUserId;
         this.chatGroup = chatGroup;
+        this.adminId = adminId;
     }
 
     public String getMessageUser() {
@@ -59,5 +61,13 @@ public class Message {
     public String getChatGroup() { return chatGroup; }
 
     public void setChatGroup(String chatGroup) { this.chatGroup = chatGroup; }
+
+    public String getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(String adminId) {
+        this.adminId = adminId;
+    }
 
 }

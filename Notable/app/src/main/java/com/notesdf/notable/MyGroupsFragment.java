@@ -209,7 +209,11 @@ public class MyGroupsFragment extends Fragment {
         }
         options[invites.size()] = "Cancel";
         AlertDialog.Builder invitesBuilder = new AlertDialog.Builder(getActivity());
-        invitesBuilder.setTitle("Invites");
+        if(options.length == 1){
+            invitesBuilder.setTitle("No invites");
+        }else{
+            invitesBuilder.setTitle("Invites");
+        }
         invitesBuilder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

@@ -48,8 +48,7 @@ public class ChatRoomFragment extends Fragment {
     private FirebaseUser currentUser;
     private String key;
     private String title;
-    private ArrayList<String> users;
-    private String adminId;
+    private Chatroom group;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +58,7 @@ public class ChatRoomFragment extends Fragment {
         currentUser = mAuth.getCurrentUser();
         key = currentUser.getUid();
         db = FirebaseFirestore.getInstance();
+        group = this.getArguments().getParcelable("Group");
     }
 
     @Override
@@ -66,6 +66,10 @@ public class ChatRoomFragment extends Fragment {
         // https://stackoverflow.com/questions/15653737/oncreateoptionsmenu-inside-fragments
         // setsupportactionbar & setHasOptionsMenu in oncreateview zijn ook noodzakelijk
         inflater.inflate(R.menu.chat_menu, menu);
+        if(!group.getAdminId().equals(key)){
+            menu.findItem(R.id.invite_user).setVisible(false);
+            menu.findItem(R.id.remove_user).setVisible(false);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -83,12 +87,12 @@ public class ChatRoomFragment extends Fragment {
         layoutManager.setStackFromEnd(true);
         chatRecyclerView.setLayoutManager(layoutManager);
 
-        title = this.getArguments().getString("buttonText");
+        title = group.getGroupName();
         toolbar.setTitle(title);
         toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.invite));
 
         // Voeg zeker een index (in firestore) toe voor de query want anders werkt recyclerview in realtime met firestore
-        query = db.collection("messages").whereEqualTo("chatGroup", title).orderBy("messageTime");
+        query = db.collection("messages").whereEqualTo("chatGroup", group.getGroupName()).whereEqualTo("adminId", group.getAdminId()).orderBy("messageTime");
         adapter = new MessageAdapter(getActivity(), query, key);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override

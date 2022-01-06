@@ -64,6 +64,8 @@ public class MyGroupsFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(true).setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED).build();
         db.setFirestoreSettings(settings);
+        key = currentUser.getUid();
+        admin.add(key);
     }
 
     @Override
@@ -72,8 +74,6 @@ public class MyGroupsFragment extends Fragment {
         BottomNavigationView bottomNav = view.findViewById(R.id.bottomAppBar);
         MaterialToolbar topAppBar = view.findViewById(R.id.topAppBar);
         mProgressCircle = view.findViewById(R.id.progress_circle);
-        key = currentUser.getUid();
-        admin.add(key);
 
         gridView = view.findViewById(R.id.groups_gridview);
         // Online

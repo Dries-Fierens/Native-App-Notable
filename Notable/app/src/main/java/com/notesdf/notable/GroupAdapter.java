@@ -2,15 +2,27 @@ package com.notesdf.notable;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 
 public class GroupAdapter extends BaseAdapter {
+    private static final String TAG = "GroupAdapter";
     Context context;
     ArrayList<String> arrayList;
 
@@ -51,10 +63,26 @@ public class GroupAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString("buttonText", holder.button.getText().toString());
-                ChatRoomFragment chatRoomFragment = new ChatRoomFragment();
-                chatRoomFragment.setArguments(bundle);
-                ((NavigationHost) context).navigateTo(chatRoomFragment, true);
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+                db.collection("users").document(currentUser.getUid())
+                        .collection("groups").whereEqualTo("groupName", holder.button.getText().toString())
+                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                bundle.putParcelable("Group", document.toObject(Chatroom.class));
+                            }
+                            ChatRoomFragment chatRoomFragment = new ChatRoomFragment();
+                            chatRoomFragment.setArguments(bundle);
+                            ((NavigationHost) context).navigateTo(chatRoomFragment, true);
+                        }else{
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
             }
         });
         holder.button.setText(arrayList.get(position));

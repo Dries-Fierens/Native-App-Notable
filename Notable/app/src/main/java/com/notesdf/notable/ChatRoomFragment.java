@@ -177,7 +177,7 @@ public class ChatRoomFragment extends Fragment {
         builder.setPositiveButton("Invite", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                String email = emailField.getText().toString().trim();
+                String email = emailField.getText().toString().replaceAll("\\s+","");
                 db.collection("users").document(key).collection("groups").whereEqualTo("groupName", title)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

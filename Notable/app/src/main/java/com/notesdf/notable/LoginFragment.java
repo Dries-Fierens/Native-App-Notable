@@ -86,11 +86,11 @@ public class LoginFragment extends Fragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isPasswordValid(passwordEditText.getText().toString().trim())) {
+                if (!isPasswordValid(passwordEditText.getText().toString().replaceAll("\\s+",""))) {
                     passwordTextInput.setError(getString(R.string.error_password));
                 } else {
                     passwordTextInput.setError(null); // Clear the error
-                    signIn(emailEditText.getText().toString(), passwordEditText.getText().toString());
+                    signIn(emailEditText.getText().toString().replaceAll("\\s+",""), passwordEditText.getText().toString());
                 }
             }
         });
@@ -98,7 +98,7 @@ public class LoginFragment extends Fragment {
         passwordEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (isPasswordValid(passwordEditText.getText().toString().trim())) {
+                if (isPasswordValid(passwordEditText.getText().toString().replaceAll("\\s+",""))) {
                     passwordTextInput.setError(null); //Clear the error
                 }
                 return false;
@@ -127,6 +127,7 @@ public class LoginFragment extends Fragment {
     private void checkUser() {
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
         if (firebaseUser != null){
+            addFirestoreUser();
             Log.w(TAG, "checkUser: Already logged in");
             ((NavigationHost) getActivity()).navigateTo(new MyNotesFragment(), false);
         }

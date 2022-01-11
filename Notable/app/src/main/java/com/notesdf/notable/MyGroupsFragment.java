@@ -39,6 +39,7 @@ import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class MyGroupsFragment extends Fragment {
 
@@ -74,6 +75,7 @@ public class MyGroupsFragment extends Fragment {
         BottomNavigationView bottomNav = view.findViewById(R.id.bottomAppBar);
         MaterialToolbar topAppBar = view.findViewById(R.id.topAppBar);
         mProgressCircle = view.findViewById(R.id.progress_circle);
+        addFirestoreUser();
 
         gridView = view.findViewById(R.id.groups_gridview);
         // Online
@@ -322,5 +324,46 @@ public class MyGroupsFragment extends Fragment {
                 Log.w(TAG, "Error getting query snapshot: " + e.getMessage());
             }
         });
+    }
+
+    private void addFirestoreUser(){
+        String key = mAuth.getCurrentUser().getUid();
+        String email = mAuth.getCurrentUser().getEmail();
+        HashMap<String, String> userData = new HashMap<>();
+        String[] names = getName(email);
+        userData.put("firstname", names[0]);
+        userData.put("lastname", names[1]);
+        userData.put("email", email);
+        userData.put("userId", key);
+
+        db.collection("users").document(key).set(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.w(TAG, "User added successfully to Firestore");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "Failed adding user to firestore", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private String[] getName(String email){
+        String name = email.substring(0, email.indexOf("@"));
+        String[] names = new String[2];
+        if(!name.contains(".")){
+            name = name.substring(0, 1).toUpperCase() + name.substring(1);
+            names[0] = name;
+            names[1] = "";
+        }else{
+            String firstName = email.substring(0, email.indexOf("."));
+            firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1);
+            String lastName = email.substring(email.indexOf(".") + 1, email.indexOf("@"));
+            lastName = lastName.substring(0, 1).toUpperCase() + lastName.substring(1);
+            names[0] = firstName;
+            names[1] = lastName;
+        }
+        return names;
     }
 }

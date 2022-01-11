@@ -62,11 +62,11 @@ public class RegistrationFragment extends Fragment {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isPasswordValid(passwordEditText.getText().toString().trim())) {
+                if (!isPasswordValid(passwordEditText.getText().toString().replaceAll("\\s+",""))) {
                     passwordTextInput.setError(getString(R.string.error_password));
                 } else {
                     passwordTextInput.setError(null);
-                    createAccount(emailEditText.getText().toString(), passwordEditText.getText().toString());
+                    createAccount(emailEditText.getText().toString().replaceAll("\\s+",""), passwordEditText.getText().toString());
                 }
             }
         });

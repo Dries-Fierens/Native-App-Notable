@@ -60,19 +60,19 @@ public class ContactUsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Boolean send = true;
-                if (!isValidEmailAddress(contactEmailEditText.getText().toString().trim())) {
+                if (!isValidEmailAddress(contactEmailEditText.getText().toString().replaceAll("\\s+",""))) {
                     contactEmailTextInput.setError(getString(R.string.error_email));
                     send = false;
                 } else {
                     contactEmailTextInput.setError(null); // Clear the error
                 }
-                if (subjectEditText.getText().toString().trim().equals("")) {
+                if (subjectEditText.getText().toString().replaceAll("\\s+","").equals("")) {
                     subjectTextInput.setError(getString(R.string.error_subject));
                     send = false;
                 } else {
                     subjectTextInput.setError(null); // Clear the error
                 }
-                if (descriptionEditText.getText().toString().trim().equals("")) {
+                if (descriptionEditText.getText().toString().replaceAll("\\s+","").equals("")) {
                     textareaTextInput.setError(getString(R.string.error_description));
                     send = false;
                 } else {
@@ -80,8 +80,8 @@ public class ContactUsFragment extends Fragment {
                 }
 
                 if (send){
-                    Complaint c = new Complaint(contactEmailEditText.getText().toString().trim(),
-                            subjectEditText.getText().toString().trim(), descriptionEditText.getText().toString().trim(), currentUser.getUid());
+                    Complaint c = new Complaint(contactEmailEditText.getText().toString().replaceAll("\\s+",""),
+                            subjectEditText.getText().toString().replaceAll("\\s+",""), descriptionEditText.getText().toString().replaceAll("\\s+",""), currentUser.getUid());
                     db.collection("complaints").add(c);
                     contactEmailEditText.setText("");
                     subjectEditText.setText("");

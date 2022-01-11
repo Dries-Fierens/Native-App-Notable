@@ -1,0 +1,10 @@
+Het duurt altijd effe totdat de SHA1 fingerprints in effect gaan daarom werkte google play effe nie.
+
+installeer dit om release te testen:
+app bundle installer!!!!!
+
+de app bundle zijn sha 1 key wordt elke keer aangepast bij elke release!!!!!
+=> https://stackoverflow.com/questions/37571498/how-to-find-keytool-for-android-app
+
+Crashes en zijn error gegevens kunnen getoond worden via google play console:
+https://play.google.com/console/u/0/developers/5387265344723778511/app/4975093721353256276/vitals/crashes?errorType=CRASH&versionCode=3

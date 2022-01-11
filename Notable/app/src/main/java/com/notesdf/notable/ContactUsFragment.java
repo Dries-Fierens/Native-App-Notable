@@ -81,7 +81,8 @@ public class ContactUsFragment extends Fragment {
 
                 if (send){
                     Complaint c = new Complaint(contactEmailEditText.getText().toString().replaceAll("\\s+",""),
-                            subjectEditText.getText().toString().replaceAll("\\s+",""), descriptionEditText.getText().toString().replaceAll("\\s+",""), currentUser.getUid());
+                            subjectEditText.getText().toString().replaceAll("\\s+",""),
+                            descriptionEditText.getText().toString(), currentUser.getUid());
                     db.collection("complaints").add(c);
                     contactEmailEditText.setText("");
                     subjectEditText.setText("");

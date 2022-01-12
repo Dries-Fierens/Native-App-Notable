@@ -163,7 +163,7 @@ public class ChatRoomFragment extends Fragment {
     }
 
     private void addImage() {
-        Log.w(TAG, "add image");
+
     }
 
     private void inviteUser() {

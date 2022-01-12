@@ -60,4 +60,7 @@
     <item name="textarea_textInput" type="id" />
     <item name="remove_user" type="id" />
     <item name="invite_user" type="id" />
+    <item name="share_image" type="id" />
+    <item name="delete_image" type="id" />
+    <item name="message_image" type="id" />
 </resources>

@@ -1,6 +1,7 @@
 package com.notesdf.notable;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,13 +64,22 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message, MessageAda
         final TextView mTime = holder.mTime;
         final TextView mDate = holder.mDate;
         final ImageView imgProfile = holder.imgProfile;
+        final ImageView mImage = holder.mImage;
 
         if(mUsername != null && imgProfile != null){
             mUsername.setText(model.getMessageUser());
             //Glide.with(context).setDefaultRequestOptions(requestOptions).load(R.drawable.placeholder).diskCacheStrategy(DiskCacheStrategy.DATA).into(imgProfile);
             //storageReference.child(model.getMessageUserId())
         }
-        mText.setText(model.getMessageText());
+        if(model.getMessageText().startsWith("https://firebasestorage.googleapis.com/v0/b/odisee-notable.appspot.com") && mImage != null){
+            mImage.setVisibility(View.VISIBLE);
+            mText.setVisibility(View.GONE);
+            Glide.with(context).load(Uri.parse(model.getMessageText())).placeholder(R.drawable.placeholder).diskCacheStrategy(DiskCacheStrategy.DATA).into(mImage);
+        }else{
+            mImage.setVisibility(View.GONE);
+            mText.setVisibility(View.VISIBLE);
+            mText.setText(model.getMessageText());
+        }
         mDate.setText(DateFormat.format("dd MMM", model.getMessageTime()));
         mTime.setText(DateFormat.format("kk:mm", model.getMessageTime()));
         //kk = 13, hh = 01 pm
@@ -82,6 +92,7 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message, MessageAda
         TextView mTime;
         TextView mDate;
         ImageView imgProfile;
+        ImageView mImage;
 
         public MessageHolder(View itemView) {
             super(itemView);
@@ -90,6 +101,7 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message, MessageAda
             mTime = itemView.findViewById(R.id.message_time);
             mDate = itemView.findViewById(R.id.message_date);
             imgProfile = itemView.findViewById(R.id.imgDps);
+            mImage = itemView.findViewById(R.id.message_image);
         }
     }
 }

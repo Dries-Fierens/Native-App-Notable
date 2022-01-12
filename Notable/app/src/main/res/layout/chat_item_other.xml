@@ -58,6 +58,15 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <ImageView
+                android:id="@+id/message_image"
+                android:contentDescription="@string/messageImage"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_marginBottom="8dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone"/>
+
             <TextView
                 android:id="@+id/message_text"
                 android:layout_width="wrap_content"

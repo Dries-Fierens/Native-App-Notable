@@ -2,12 +2,14 @@ package com.notesdf.notable;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -75,6 +77,18 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message, MessageAda
             mImage.setVisibility(View.VISIBLE);
             mText.setVisibility(View.GONE);
             Glide.with(context).load(Uri.parse(model.getMessageText())).placeholder(R.drawable.placeholder).diskCacheStrategy(DiskCacheStrategy.DATA).into(mImage);
+            mImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("image", model.getMessageText());
+                    ImageCommentFragment imageCommentFragment = new ImageCommentFragment();
+                    imageCommentFragment.setArguments(bundle);
+                    // Ik navigeerde eerst naar een new imagedetailsfragment en dus werden de arguments verwijdert!!!
+                    // https://stackoverflow.com/questions/14970790/fragment-getarguments-returns-null
+                    ((NavigationHost) context).navigateTo(imageCommentFragment, true);
+                }
+            });
         }else{
             mImage.setVisibility(View.GONE);
             mText.setVisibility(View.VISIBLE);

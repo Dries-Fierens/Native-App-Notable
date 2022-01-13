@@ -7,10 +7,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class SettingsFragment extends Fragment {
 
     private static final String TAG = "Notable:Settings";
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -27,6 +34,9 @@ public class SettingsFragment extends Fragment {
         MaterialButton privacyButton = view.findViewById(R.id.privacy_button);
         MaterialButton termsButton = view.findViewById(R.id.termsConditions_button);
         MaterialButton contactButton = view.findViewById(R.id.contactUs_button);
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.Oauth_client_id)).requestEmail().build();
+        mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,6 +49,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.w(TAG, "signOut:success");
+                mGoogleSignInClient.signOut();
                 FirebaseAuth.getInstance().signOut();
                 ((NavigationHost) getActivity()).navigateTo(new LoginFragment(), false);
             }

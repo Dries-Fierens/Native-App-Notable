@@ -68,6 +68,8 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message, MessageAda
         final ImageView imgProfile = holder.imgProfile;
         final ImageView mImage = holder.mImage;
 
+        // Model is een message object
+
         if(mUsername != null && imgProfile != null){
             mUsername.setText(model.getMessageUser());
             //Glide.with(context).setDefaultRequestOptions(requestOptions).load(R.drawable.placeholder).diskCacheStrategy(DiskCacheStrategy.DATA).into(imgProfile);
@@ -82,6 +84,8 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message, MessageAda
                 public void onClick(View view) {
                     Bundle bundle = new Bundle();
                     bundle.putString("image", model.getMessageText());
+                    bundle.putString("adminId", model.getAdminId());
+                    bundle.putString("chatGroup", model.getChatGroup());
                     ImageCommentFragment imageCommentFragment = new ImageCommentFragment();
                     imageCommentFragment.setArguments(bundle);
                     // Ik navigeerde eerst naar een new imagedetailsfragment en dus werden de arguments verwijdert!!!

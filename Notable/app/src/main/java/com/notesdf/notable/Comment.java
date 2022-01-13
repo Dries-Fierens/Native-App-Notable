@@ -13,10 +13,12 @@ public class Comment {
     private float x;
     private float y;
     private String image;
+    private String adminId;
+    private String chatGroup;
 
     public Comment(){}
 
-    public Comment(String commentUser, String commentText, String commentUserId, float x, float y, String image) {
+    public Comment(String commentUser, String commentText, String commentUserId, float x, float y, String image, String adminId, String chatGroup) {
         this.commentUser = commentUser;
         this.commentText = commentText;
         this.x = x;
@@ -27,6 +29,8 @@ public class Comment {
         this.commentTime = plus1.getTime();
         this.commentUserId = commentUserId;
         this.image = image;
+        this.adminId = adminId;
+        this.chatGroup = chatGroup;
     }
 
     public String getCommentUser() {
@@ -81,5 +85,21 @@ public class Comment {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(String adminId) {
+        this.adminId = adminId;
+    }
+
+    public String getChatGroup() {
+        return chatGroup;
+    }
+
+    public void setChatGroup(String chatGroup) {
+        this.chatGroup = chatGroup;
     }
 }

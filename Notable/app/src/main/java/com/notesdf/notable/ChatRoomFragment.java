@@ -148,9 +148,7 @@ public class ChatRoomFragment extends Fragment {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 int id = item.getItemId();
-                if (id == R.id.add_image){
-                    addImage();
-                }else if(id == R.id.invite_user){
+                if(id == R.id.invite_user){
                     inviteUser();
                 }else{
                     removeUser();
@@ -160,10 +158,6 @@ public class ChatRoomFragment extends Fragment {
         });
 
         return view;
-    }
-
-    private void addImage() {
-
     }
 
     private void inviteUser() {

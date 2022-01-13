@@ -123,16 +123,16 @@ public class ImageCommentFragment extends Fragment {
                     textView.setTranslationX(x);
                     textView.setTranslationY(y);
                     String comment = comments.get(i).getCommentText();
+                    String name = comments.get(i).getCommentUser();
                     textView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             PopupMenu popupMenu = new PopupMenu(getActivity(), textView);
-                            popupMenu.getMenuInflater().inflate(R.menu.comment_popup_menu, popupMenu.getMenu());
-                            popupMenu.getMenu().add(comment);
+                            popupMenu.getMenu().add(name + ": " + comment);
                             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                                 @Override
                                 public boolean onMenuItemClick(MenuItem menuItem) {
-                                    Toast.makeText(getActivity(), menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), menuItem.getTitle(), Toast.LENGTH_LONG).show();
                                     return true;
                                 }
                             });

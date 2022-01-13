@@ -64,4 +64,5 @@
     <item name="delete_image" type="id" />
     <item name="message_image" type="id" />
     <item name="comments" type="id" />
+    <item name="comment_popup" type="id" />
 </resources>

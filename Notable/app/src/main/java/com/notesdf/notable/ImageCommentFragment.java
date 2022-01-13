@@ -13,11 +13,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -119,10 +122,21 @@ public class ImageCommentFragment extends Fragment {
                     Log.w(TAG, "X: " + x + ", Y: " + y);
                     textView.setTranslationX(x);
                     textView.setTranslationY(y);
+                    String comment = comments.get(i).getCommentText();
                     textView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Toast.makeText(getActivity(), "Clicked", Toast.LENGTH_LONG).show();
+                            PopupMenu popupMenu = new PopupMenu(getActivity(), textView);
+                            popupMenu.getMenuInflater().inflate(R.menu.comment_popup_menu, popupMenu.getMenu());
+                            popupMenu.getMenu().add(comment);
+                            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                @Override
+                                public boolean onMenuItemClick(MenuItem menuItem) {
+                                    Toast.makeText(getActivity(), menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                                    return true;
+                                }
+                            });
+                            popupMenu.show();
                         }
                     });
                     layout.addView(textView);

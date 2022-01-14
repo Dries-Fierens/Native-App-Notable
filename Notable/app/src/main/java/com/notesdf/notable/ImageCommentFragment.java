@@ -34,6 +34,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -55,6 +57,7 @@ public class ImageCommentFragment extends Fragment {
     private String adminId;
     private String chatGroup;
     private RelativeLayout layout;
+    private boolean state = true;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +77,7 @@ public class ImageCommentFragment extends Fragment {
         View view = inflater.inflate(R.layout.imagecomment_fragment, container, false);
         ImageView fullscreenImage = view.findViewById(R.id.fullscreen_image);
         layout = view.findViewById(R.id.comments);
+        BottomNavigationView bottomNav = view.findViewById(R.id.bottomAppBar);
 
         image = this.getArguments().getString("image");
         adminId = this.getArguments().getString("adminId");
@@ -90,10 +94,30 @@ public class ImageCommentFragment extends Fragment {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 float x = motionEvent.getX();
                 float y = motionEvent.getY();
-                if (motionEvent.getActionMasked() == MotionEvent.ACTION_UP) {
+                if (motionEvent.getActionMasked() == MotionEvent.ACTION_UP && state) {
                     showDialog(x, y, image);
                 }
                 return false;
+            }
+        });
+
+        bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.disable_comment) {
+                    if (state){
+                        layout.removeAllViews();
+                        state = false;
+                        item.setTitle("Enable comments");
+                        item.setIcon(R.drawable.comment);
+                    }else{
+                        displayComments(layout);
+                        state = true;
+                        item.setTitle("Disable comments");
+                        item.setIcon(R.drawable.comment_slash);
+                    }
+                }
+                return true;
             }
         });
 

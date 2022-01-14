@@ -58,4 +58,6 @@
     <string name="content_description_delete_image">Delete image</string>
     <string name="content_description_upload_image">Upload to group</string>
     <string name="messageImage">Image message</string>
+    <string name="disable_comment">Disable comments</string>
+    <string name="content_description_comment_slash">Disable comments</string>
 </resources>

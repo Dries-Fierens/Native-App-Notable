@@ -65,4 +65,5 @@
     <item name="message_image" type="id" />
     <item name="comments" type="id" />
     <item name="comment_popup" type="id" />
+    <item name="disable_comment" type="id" />
 </resources>

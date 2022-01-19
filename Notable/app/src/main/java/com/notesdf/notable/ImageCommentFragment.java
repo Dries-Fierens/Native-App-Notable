@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -58,6 +59,8 @@ public class ImageCommentFragment extends Fragment {
     private String chatGroup;
     private RelativeLayout layout;
     private boolean state = true;
+    private int height = 0;
+    private int width = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +70,10 @@ public class ImageCommentFragment extends Fragment {
         currentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
         key = currentUser.getUid();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        height = displayMetrics.heightPixels;
+        width = displayMetrics.widthPixels;
     }
 
     //De ontouch is nu niet voor blinde mensen
@@ -135,6 +142,11 @@ public class ImageCommentFragment extends Fragment {
                 for (int i = 0; i <= comments.size() - 1; i++){
                     float x = comments.get(i).getX();
                     float y = comments.get(i).getY();
+                    //https://math.stackexchange.com/questions/419838/repositioning-and-resizing-when-i-change-the-size-of-my-frame
+                    Log.w(TAG, "Screen width: " + width + ", height: " + height);
+                    Log.w(TAG, "Comment screen width: " + comments.get(i).getScreenWidth() + ", height: " + comments.get(i).getScreenHeight());
+                    x *= (double) width / comments.get(i).getScreenWidth();
+                    y *= (double) height / comments.get(i).getScreenHeight();
                     TextView textView = new TextView(getActivity());
                     textView.setId(View.generateViewId());
                     textView.setVisibility(View.VISIBLE);
@@ -186,7 +198,7 @@ public class ImageCommentFragment extends Fragment {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()){
                             String firstName = documentSnapshot.get("firstname").toString();
-                            db.collection("comments").add(new Comment(firstName, comment, key, x, y, image, adminId, chatGroup));
+                            db.collection("comments").add(new Comment(firstName, comment, key, x, y, width, height, image, adminId, chatGroup));
                             displayComments(layout);
                         }else{
                             Log.w(TAG, "No such document");

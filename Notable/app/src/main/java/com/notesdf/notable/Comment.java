@@ -12,17 +12,21 @@ public class Comment {
     private long commentTime;
     private float x;
     private float y;
+    private int screenWidth;
+    private int screenHeight;
     private String image;
     private String adminId;
     private String chatGroup;
 
     public Comment(){}
 
-    public Comment(String commentUser, String commentText, String commentUserId, float x, float y, String image, String adminId, String chatGroup) {
+    public Comment(String commentUser, String commentText, String commentUserId, float x, float y, int screenWidth, int screenHeight, String image, String adminId, String chatGroup) {
         this.commentUser = commentUser;
         this.commentText = commentText;
         this.x = x;
         this.y = y;
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
         Calendar cal = Calendar.getInstance();
         //cal.setTimeZone(TimeZone.getTimeZone("GMT" + 1));
         Date plus1 = cal.getTime();
@@ -101,5 +105,21 @@ public class Comment {
 
     public void setChatGroup(String chatGroup) {
         this.chatGroup = chatGroup;
+    }
+
+    public int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public void setScreenWidth(int screenWidth) {
+        this.screenWidth = screenWidth;
+    }
+
+    public int getScreenHeight() {
+        return screenHeight;
+    }
+
+    public void setScreenHeight(int screenHeight) {
+        this.screenHeight = screenHeight;
     }
 }
